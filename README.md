@@ -31,10 +31,12 @@ O sistema busca facilitar o acesso à saúde mental, conectando pacientes a prof
 | Nome |
 |------|
 | Alexandre Przybyszewski |
+| Bruno de Paula Martins |
 | Caio Willian Litka |
 | Clayton dos Santos Alves |
 | Guilherme Boesing |
 | Leonardo de Lara Stechechen |
+
 
 ---
 
