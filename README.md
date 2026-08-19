@@ -39,7 +39,6 @@ O sistema busca facilitar o acesso à saúde mental, conectando pacientes a prof
 | Guilherme Boesing |
 | Leonardo de Lara Stechechen |
 
-
 ---
 
 ## 📄 Licença
