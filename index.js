@@ -6,11 +6,9 @@ app.get('/', (req, res) => { res.send('Olá mundo !'); })
 
 const pool = require('./db');
 app.use(express.json());
-const pessoaRoutes = require('./routes/pessoaRoutes');
-app.use('/pessoas', pessoaRoutes);
 
-const cargoRoutes = require('./routes/cargoRoutes');
-app.use('/cargos', cargoRoutes);
+const clienteRoutes = require('./3routes/clienteRoutes');
+app.use('/cliente', clienteRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

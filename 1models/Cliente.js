@@ -4,42 +4,52 @@ const sequelize = require('../config/database');
 const Cliente = sequelize.define('Cliente', {
 
   id_cliente: {
-  type: DataTypes.INTEGER,
-  primaryKey: true,
-  autoIncrement: true
-},
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
 
-cpf_cliente: {
-  type: DataTypes.STRING(14),
-  allowNull: false,
-  unique: true
-},
+  convenio_cliente: {
+    type: DataTypes.STRING(10),
+    allowNull: false
+  },
 
-genero_cliente: {
-  type: DataTypes.STRING(20),
-  allowNull: false
-},
+  nome_cliente: {
+    type: DataTypes.STRING(255),
+    allowNull: false
+  },
 
-data_nascimento_cliente: {
-  type: DataTypes.DATEONLY,
-  allowNull: false
-},
+  cpf_cliente: {
+    type: DataTypes.STRING(14),
+    allowNull: false,
+    unique: true
+  },
 
-convenio_cliente: {
-  type: DataTypes.STRING(10),
-  allowNull: false
-},
+  contato_cliente: {
+    type: DataTypes.STRING(14),
+    allowNull: true
+  },
 
-descricao_cliente: {
-  type: DataTypes.TEXT,
-  allowNull: true
-},
+  genero_cliente: {
+    type: DataTypes.STRING(20),
+    allowNull: false
+  },
 
-ativo: {
-  type: DataTypes.BOOLEAN,
-  allowNull: false,
-  defaultValue: true
-}
+  data_nascimento_cliente: {
+    type: DataTypes.DATEONLY,
+    allowNull: false
+  },
+
+  descricao_cliente: {
+    type: DataTypes.TEXT,
+    allowNull: true
+  },
+
+  ativo: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
+    defaultValue: true
+  }
 
 },
 {
