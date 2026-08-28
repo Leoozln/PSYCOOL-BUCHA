@@ -16,6 +16,9 @@ app.use('/cliente', clienteRoutes);
 const psicologoRoutes = require('./3routes/psicologoRoutes');
 app.use('/psicologo', psicologoRoutes);
 
+const empresaRoutes = require('./3routes/empresaRoutes');
+app.use('/empresa', empresaRoutes);
+
 const agendaRoutes = require('./3routes/agendaRoutes');
 app.use('/agenda', agendaRoutes);
 
