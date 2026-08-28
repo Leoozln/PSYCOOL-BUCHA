@@ -16,6 +16,9 @@ app.use('/cliente', clienteRoutes);
 const psicologoRoutes = require('./3routes/psicologoRoutes');
 app.use('/psicologo', psicologoRoutes);
 
+const agendaRoutes = require('./3routes/agendaRoutes');
+app.use('/agenda', agendaRoutes);
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
