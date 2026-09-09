@@ -26,12 +26,13 @@ app.use('/empresa', empresaRoutes);
 const agendaRoutes = require('./3routes/agendaRoutes');
 app.use('/agenda', agendaRoutes);
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
-
 app.use(
     '/api-docs',
     swaggerUi.serve,
-    swaggerUi.setup(swaggerSpec)
-);
+    swaggerUi.setup(swaggerSpec));
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+});
+
+

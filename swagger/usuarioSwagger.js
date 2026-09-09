@@ -1,15 +1,15 @@
 const usuarioSwagger = {
     paths: {
 
-        // LISTAR CARGOS
-        '/cargos': {
+        // LISTAR usuarios
+        '/usuario': {
             get: {
-                tags: ['Cargos'],
-                summary: 'Lista todos os cargos',
+                tags: ['usuario'],
+                summary: 'Lista todos os usuarios',
 
                 responses: {
                     200: {
-                        description: 'Lista de cargos retornada com sucesso'
+                        description: 'Lista de usuarios retornada com sucesso'
                     },
 
                     500: {
@@ -18,10 +18,10 @@ const usuarioSwagger = {
                 }
             },
 
-            // INSERIR CARGO
+            // INSERIR usuario
             post: {
-                tags: ['Cargos'],
-                summary: 'Cadastra um novo cargo',
+                tags: ['usuario'],
+                summary: 'Cadastra um novo usuario',
 
                 requestBody: {
                     required: true,
@@ -32,13 +32,26 @@ const usuarioSwagger = {
                                 type: 'object',
 
                                 properties: {
-                                    car_nome: {
+                                    tipo_usuario: {
                                         type: 'string',
-                                        example: 'Desenvolvedor'
+                                        enum: ['Cliente', 'Psicologo', 'Empresa'],
+                                        example: 'Cliente'
+                                    },
+                                    email_usuario: {
+                                        type: 'string',
+                                        example: 'joao.silva@teste.com'
+                                    },
+                                    senha_usuario: {
+                                        type: 'string',
+                                        example: 'senha123'
+                                    },
+                                    ativo: {
+                                        type: 'boolean',
+                                        example: true
                                     }
                                 },
 
-                                required: ['car_nome']
+                                required: ['tipo_usuario', 'email_usuario', 'senha_usuario']
                             }
                         }
                     }
@@ -46,7 +59,7 @@ const usuarioSwagger = {
 
                 responses: {
                     201: {
-                        description: 'Cargo cadastrado com sucesso'
+                        description: 'Usuario cadastrado com sucesso'
                     },
 
                     400: {
@@ -60,12 +73,12 @@ const usuarioSwagger = {
             }
         },
 
-        // BUSCAR CARGO POR ID
-        '/cargos/{id}': {
+        // BUSCAR usuario POR ID
+        '/usuario/{id}': {
 
             get: {
-                tags: ['Cargos'],
-                summary: 'Busca um cargo pelo ID',
+                tags: ['usuario'],
+                summary: 'Busca um usuario pelo ID',
 
                 parameters: [
                     {
@@ -77,17 +90,17 @@ const usuarioSwagger = {
                             type: 'integer'
                         },
 
-                        description: 'ID do cargo'
+                        description: 'ID do usuario'
                     }
                 ],
 
                 responses: {
                     200: {
-                        description: 'Cargo encontrado'
+                        description: 'Usuario encontrado'
                     },
 
                     404: {
-                        description: 'Cargo não encontrado'
+                        description: 'Usuario não encontrado'
                     },
 
                     500: {
@@ -96,10 +109,10 @@ const usuarioSwagger = {
                 }
             },
 
-            // ALTERAR CARGO
+            // ALTERAR usuario
             put: {
-                tags: ['Cargos'],
-                summary: 'Altera um cargo',
+                tags: ['usuario'],
+                summary: 'Altera um usuario',
 
                 parameters: [
                     {
@@ -111,7 +124,7 @@ const usuarioSwagger = {
                             type: 'integer'
                         },
 
-                        description: 'ID do cargo'
+                        description: 'ID do usuario'
                     }
                 ],
 
@@ -124,13 +137,24 @@ const usuarioSwagger = {
                                 type: 'object',
 
                                 properties: {
-                                    car_nome: {
+                                    tipo_usuario: {
                                         type: 'string',
-                                        example: 'Desenvolvedor Backend'
+                                        enum: ['Cliente', 'Psicologo', 'Empresa'],
+                                        example: 'Cliente'
+                                    },
+                                    email_usuario: {
+                                        type: 'string',
+                                        example: 'joao.silva@teste.com'
+                                    },
+                                    senha_usuario: {
+                                        type: 'string',
+                                        example: 'senha123'
+                                    },
+                                    ativo: {
+                                        type: 'boolean',
+                                        example: true
                                     }
-                                },
-
-                                required: ['car_nome']
+                                }
                             }
                         }
                     }
@@ -138,11 +162,11 @@ const usuarioSwagger = {
 
                 responses: {
                     200: {
-                        description: 'Cargo alterado com sucesso'
+                        description: 'Usuario alterado com sucesso'
                     },
 
                     404: {
-                        description: 'Cargo não encontrado'
+                        description: 'Usuario não encontrado'
                     },
 
                     500: {
@@ -151,10 +175,10 @@ const usuarioSwagger = {
                 }
             },
 
-            // EXCLUIR CARGO
+            // EXCLUIR usuario
             delete: {
-                tags: ['Cargos'],
-                summary: 'Exclui um cargo',
+                tags: ['usuario'],
+                summary: 'Exclui um usuario',
 
                 parameters: [
                     {
@@ -166,17 +190,17 @@ const usuarioSwagger = {
                             type: 'integer'
                         },
 
-                        description: 'ID do cargo'
+                        description: 'ID do usuario'
                     }
                 ],
 
                 responses: {
                     200: {
-                        description: 'Cargo excluído com sucesso'
+                        description: 'Usuario excluído com sucesso'
                     },
 
                     404: {
-                        description: 'Cargo não encontrado'
+                        description: 'Usuario não encontrado'
                     },
 
                     500: {
