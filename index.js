@@ -2,6 +2,10 @@ const express = require('express');
 const app = express()
 const port = 3000
 
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerSpec = require('./swagger');
+
 app.get('/', (req, res) => { res.send('Olá mundo !'); })
 
 const pool = require('./db');
@@ -26,3 +30,8 @@ app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
 
+app.use(
+    '/api-docs',
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec)
+);
