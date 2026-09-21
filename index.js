@@ -32,6 +32,9 @@ app.use('/anotacoes', anotacoesRoutes);
 const avaliacaoRoutes = require('./3routes/avaliacaoRoutes');
 app.use('/avaliacao', avaliacaoRoutes);
 
+const consultaRoutes = require('./3routes/consultaRoutes');
+app.use('/consulta', consultaRoutes);
+
 app.use(
     '/api-docs',
     swaggerUi.serve,
