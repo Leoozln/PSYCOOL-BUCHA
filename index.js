@@ -10,6 +10,7 @@ app.get('/', (req, res) => { res.send('Olá mundo !'); })
 
 const pool = require('./db');
 app.use(express.json());
+app.use(express.static('public'));
 
 const usuarioRoutes = require('./3routes/usuarioRoutes');
 app.use('/usuario', usuarioRoutes);
