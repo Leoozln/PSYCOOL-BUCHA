@@ -35,6 +35,9 @@ app.use('/avaliacao', avaliacaoRoutes);
 const consultaRoutes = require('./3routes/consultaRoutes');
 app.use('/consulta', consultaRoutes);
 
+const pagamentoRoutes = require('./3routes/pagamentoRoutes');
+app.use('/pagamento', pagamentoRoutes);
+
 app.use(
     '/api-docs',
     swaggerUi.serve,
