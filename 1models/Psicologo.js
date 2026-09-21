@@ -99,7 +99,17 @@ const psicologo = sequelize.define('psicologo', {
         allowNull: true
     },
 
+    status_validacao: {
+        type: DataTypes.STRING(20),
+        allowNull: false,
+        defaultValue: 'PENDENTE',
+        validate: {
+            isIn: [['PENDENTE', 'APROVADO', 'REPROVADO']]
+        }
+    },
+
 }, {
+
     tableName: 'psicologo',
     timestamps: false,
     indexes: [
