@@ -26,6 +26,9 @@ app.use('/empresa', empresaRoutes);
 const agendaRoutes = require('./3routes/agendaRoutes');
 app.use('/agenda', agendaRoutes);
 
+const anotacoesRoutes = require('./3routes/anotacoesRoutes');
+app.use('/anotacoes', anotacoesRoutes);
+
 app.use(
     '/api-docs',
     swaggerUi.serve,
