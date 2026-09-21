@@ -1,5 +1,7 @@
+const sequelize = require('../config/database');
+const Usuario = require('../1models/usuario');
 const Psicologo = require('../1models/Psicologo');
-
+ 
 async function listar(req,res){
     try{
         const psicologos = await Psicologo.findAll();
@@ -7,9 +9,9 @@ async function listar(req,res){
     }catch(erro) {
         res.status(500).json({ erro: erro.message });
     }
-
+ 
 }
-
+ 
 async function buscar(req,res){
     try{
         const psicologo = await Psicologo.findByPk(req.params.id);
@@ -21,7 +23,7 @@ async function buscar(req,res){
         res.status(500).json({erro:erro.message});
     }
 }
-
+ 
 async function inserir(req,res){
     try {
         const {
@@ -33,25 +35,42 @@ async function inserir(req,res){
             data_nascimento_psicologo,
             especialidade_psicologo,
             foto_psicologo,
-            descricao_psicologo
+            descricao_psicologo,
+            email_usuario,
+            senha_usuario
         } = req.body;
-        const psicologo = await Psicologo.create({
-            nome_psicologo,
-            crp_psicologo,
-            contato_psicologo,
-            diploma_psicologo: diploma_psicologo || [],
-            genero_psicologo,
-            data_nascimento_psicologo,
-            especialidade_psicologo,
-            foto_psicologo,
-            descricao_psicologo
+ 
+        
+        const resultado = await sequelize.transaction(async (t) => {
+            const usuario = await Usuario.create({
+                tipo_usuario: 'Psicologo',
+                email_usuario: email_usuario || `${contato_psicologo}@temp.com`,
+                senha_usuario: senha_usuario || '123456',
+                ativo: true
+            }, { transaction: t });
+ 
+            const psicologo = await Psicologo.create({
+                id_psicologo: usuario.id_usuario,
+                nome_psicologo,
+                crp_psicologo,
+                contato_psicologo,
+                diploma_psicologo: diploma_psicologo || [],
+                genero_psicologo,
+                data_nascimento_psicologo,
+                especialidade_psicologo,
+                foto_psicologo,
+                descricao_psicologo
+            }, { transaction: t });
+ 
+            return psicologo;
         });
-        res.status(201).json(psicologo);
+ 
+        res.status(201).json(resultado);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
 }
-
+ 
 async function atualizar(req,res){
     try{
         const psicologo = await Psicologo.findByPk(req.params.id);
@@ -85,7 +104,7 @@ async function atualizar(req,res){
         res.status(500).json({ erro: erro.message });
     }
 }
-
+ 
 async function excluir(req,res){
     try{
         const psicologo = await Psicologo.findByPk(req.params.id);
@@ -98,7 +117,7 @@ async function excluir(req,res){
         res.status(500).json({ erro: erro.message });
     }
 }
-
+ 
 module.exports = {
     listar,
     buscar,
