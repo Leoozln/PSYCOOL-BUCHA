@@ -40,7 +40,7 @@ const pagamentoRoutes = require('./3routes/pagamentoRoutes');
 app.use('/pagamento', pagamentoRoutes);
 
 app.use(
-    '/api-docs',
+    '/swagger',
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec));
 

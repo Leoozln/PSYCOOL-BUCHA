@@ -3,112 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="css_cadastro-psicologo.css">
 <title>PsyCool — Cadastro de Psicólogo</title>
-<style>
-  :root {
-    --bg: #0f172a;
-    --card: #1e293b;
-    --border: #334155;
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-    --accent: #6366f1;
-    --accent-hover: #4f46e5;
-    --error: #f87171;
-    --success: #4ade80;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    display: flex;
-    justify-content: center;
-    padding: 40px 16px;
-  }
-  .card {
-    width: 100%;
-    max-width: 560px;
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 32px;
-  }
-  h1 {
-    font-size: 1.4rem;
-    margin: 0 0 4px;
-  }
-  .subtitle {
-    color: var(--muted);
-    font-size: 0.9rem;
-    margin: 0 0 24px;
-  }
-  label {
-    display: block;
-    font-size: 0.85rem;
-    margin: 16px 0 6px;
-    color: var(--muted);
-  }
-  input, select, textarea {
-    width: 100%;
-    padding: 10px 12px;
-    background: #0f172a;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-size: 0.95rem;
-  }
-  input:focus, select:focus, textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-  .hint {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 4px;
-  }
-  button {
-    width: 100%;
-    margin-top: 24px;
-    padding: 12px;
-    background: var(--accent);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  button:hover { background: var(--accent-hover); }
-  button:disabled { opacity: 0.6; cursor: not-allowed; }
-  #resultado {
-    margin-top: 20px;
-    padding: 12px 14px;
-    border-radius: 8px;
-    font-size: 0.9rem;
-    white-space: pre-wrap;
-    display: none;
-  }
-  #resultado.ok {
-    display: block;
-    background: rgba(74, 222, 128, 0.1);
-    border: 1px solid var(--success);
-    color: var(--success);
-  }
-  #resultado.erro {
-    display: block;
-    background: rgba(248, 113, 113, 0.1);
-    border: 1px solid var(--error);
-    color: var(--error);
-  }
-  .config {
-    margin-bottom: 20px;
-    padding: 10px 12px;
-    background: #0f172a;
-    border: 1px dashed var(--border);
-    border-radius: 8px;
-  }
-  .config label { margin-top: 0; }
-</style>
+
+
 </head>
 <body>
   <div class="card">
@@ -129,7 +27,7 @@
       <div class="hint">Formato: NN/NNNNN ou NN/NNNNNN</div>
 
       <label for="contato">Contato (telefone)</label>
-      <input type="text" id="contato" required placeholder="Ex: 41999998888" pattern="^[1-9]{2}[0-9]{8,9}$">
+      <input type="text" id="contato" required placeholder="Ex: (41) 99999-8888" pattern="^\(\d{2}\) \d{5}-\d{4}$" maxlength="16">
       <div class="hint">Apenas números, sem espaços ou traços — DDD + número</div>
 
       <label for="genero">Gênero</label>
@@ -162,65 +60,7 @@
     <div id="resultado"></div>
   </div>
 
-<script>
-const form = document.getElementById('form');
-const resultado = document.getElementById('resultado');
-const btnEnviar = document.getElementById('btnEnviar');
+<script src="script_cadastro-psicologo.js"></script>
 
-function paraArray(valor) {
-  return valor
-    .split(',')
-    .map(s => s.trim())
-    .filter(s => s.length > 0);
-}
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-
-  const apiUrl = document.getElementById('apiUrl').value.trim();
-
-  const payload = {
-    nome_psicologo: document.getElementById('nome').value.trim(),
-    crp_psicologo: document.getElementById('crp').value.trim(),
-    contato_psicologo: document.getElementById('contato').value.trim(),
-    genero_psicologo: document.getElementById('genero').value,
-    data_nascimento_psicologo: document.getElementById('nascimento').value,
-    especialidade_psicologo: paraArray(document.getElementById('especialidades').value),
-    diploma_psicologo: paraArray(document.getElementById('diploma').value),
-    descricao_psicologo: document.getElementById('descricao').value.trim() || null
-  };
-
-  btnEnviar.disabled = true;
-  btnEnviar.textContent = 'Enviando...';
-  resultado.className = '';
-  resultado.style.display = 'none';
-
-  try {
-    const resp = await fetch(apiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    });
-
-    const dados = await resp.json();
-
-    if (resp.ok) {
-      resultado.className = 'ok';
-      resultado.textContent = 'Cadastrado com sucesso!\n\n' + JSON.stringify(dados, null, 2);
-      form.reset();
-    } else {
-      resultado.className = 'erro';
-      resultado.textContent = 'Erro ao cadastrar (status ' + resp.status + '):\n\n' + JSON.stringify(dados, null, 2);
-    }
-  } catch (err) {
-    resultado.className = 'erro';
-    resultado.textContent = 'Falha na requisição: ' + err.message +
-      '\n\nSe o erro for de CORS ou "Failed to fetch", confirme que o servidor Express está rodando e considere adicionar o middleware "cors" no index.js.';
-  } finally {
-    btnEnviar.disabled = false;
-    btnEnviar.textContent = 'Cadastrar';
-  }
-});
-</script>
 </body>
 </html>
