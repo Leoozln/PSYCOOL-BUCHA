@@ -67,6 +67,7 @@ async function inserir(req,res){
  
         res.status(201).json(resultado);
     } catch (erro) {
+        console.error(erro); // Imprime a informação no terminal do servidor
         res.status(500).json({ erro: erro.message });
     }
 }
