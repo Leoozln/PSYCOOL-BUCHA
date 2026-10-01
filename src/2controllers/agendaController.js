@@ -1,4 +1,4 @@
-const Agenda = require('../1models/agenda');
+const { Agenda } = require('../1models');
 
 async function listar(req,res){
     try{
@@ -33,7 +33,7 @@ async function inserir(req,res){
             desconto_convenio,
             preco_final
         } = req.body;
-        const agenda = await Agenda.create({
+        const agendanova = await Agenda.create({
             id_cliente,
             id_psicologo,
             datahora_agenda,
@@ -42,7 +42,7 @@ async function inserir(req,res){
             desconto_convenio: desconto_convenio || 0,
             preco_final
         });
-        res.status(201).json(agenda);
+        res.status(201).json(agendanova);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -69,7 +69,7 @@ async function atualizar(req,res){
             datahora_agenda,
             status_agenda,
             preco_base,
-            desconto_convenio,
+            desconto_convenio: desconto_convenio || 0,
             preco_final
         });
         res.json(agenda);

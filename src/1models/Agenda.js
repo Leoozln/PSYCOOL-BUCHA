@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const agenda = sequelize.define('agenda', {
+const agenda = sequelize.define('Agenda', {
 
     id_agenda: {
         type: DataTypes.INTEGER,

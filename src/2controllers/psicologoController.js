@@ -1,6 +1,5 @@
+const { Usuario, Psicologo } = require('../1models');
 const sequelize = require('../config/database');
-const Usuario = require('../1models/usuario');
-const Psicologo = require('../1models/Psicologo');
  
 async function listar(req,res){
     try{
@@ -39,18 +38,15 @@ async function inserir(req,res){
             email_usuario,
             senha_usuario
         } = req.body;
- 
-        
         const resultado = await sequelize.transaction(async (t) => {
-            const usuario = await Usuario.create({
+            const usuarionovo = await Usuario.create({
                 tipo_usuario: 'Psicologo',
                 email_usuario: email_usuario || `${contato_psicologo}@temp.com`,
                 senha_usuario: senha_usuario || '123456',
                 ativo: true
             }, { transaction: t });
- 
-            const psicologo = await Psicologo.create({
-                id_psicologo: usuario.id_usuario,
+            const psicologonovo = await Psicologo.create({
+                id_psicologo: usuarionovo.id_usuario,
                 nome_psicologo,
                 crp_psicologo,
                 contato_psicologo,
@@ -61,13 +57,11 @@ async function inserir(req,res){
                 foto_psicologo,
                 descricao_psicologo
             }, { transaction: t });
- 
-            return psicologo;
+            return psicologonovo;
         });
- 
         res.status(201).json(resultado);
     } catch (erro) {
-        console.error(erro); // Imprime a informação no terminal do servidor
+        console.error(erro);
         res.status(500).json({ erro: erro.message });
     }
 }
@@ -113,7 +107,7 @@ async function excluir(req,res){
             return res.status(404).json({ erro: 'Psicólogo não encontrado!' });
         }
         await psicologo.destroy();
-        res.json({ mensagem: 'Psicólogo removido com sucesso!'});
+        res.json({ mensagem: 'Psicólogo removido!'});
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }

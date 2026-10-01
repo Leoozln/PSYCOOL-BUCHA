@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
-const anotacoes = sequelize.define('anotacoes', {
+const Anotacao = sequelize.define('Anotacao', {
 
     id_anotacao: {
         type: DataTypes.INTEGER,
@@ -23,8 +23,8 @@ const anotacoes = sequelize.define('anotacoes', {
 
 },
 {
-    tableName: 'anotacoes',
+    tableName: 'anotacao',
     timestamps: false
 });
 
-module.exports = anotacoes;
+module.exports = Anotacao;
