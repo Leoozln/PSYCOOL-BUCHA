@@ -5,7 +5,7 @@ const port = 3000
 
 const swaggerUi = require('swagger-ui-express');
 
-const swaggerSpec = require('./swagger');
+const swaggerSpec = require('./swagger/swagger');
 
 app.get('/', (req, res) => { res.send('Olá mundo !'); })
 
@@ -28,7 +28,7 @@ app.use('/empresa', empresaRoutes);
 const agendaRoutes = require('./3routes/agendaRoutes');
 app.use('/agenda', agendaRoutes);
 
-const anotacoesRoutes = require('./3routes/anotacoesRoutes');
+const anotacoesRoutes = require('./3routes/anotacaoRoutes');
 app.use('/anotacoes', anotacoesRoutes);
 
 const avaliacaoRoutes = require('./3routes/avaliacaoRoutes');

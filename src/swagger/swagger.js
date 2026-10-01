@@ -1,4 +1,4 @@
-const cargoSwagger = require('./swagger/usuarioSwagger');
+const cargoSwagger = require('./usuarioSwagger');
 
 const swaggerSpec = {
     openapi: '3.0.0',
