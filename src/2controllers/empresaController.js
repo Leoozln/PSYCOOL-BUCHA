@@ -47,7 +47,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(empresanova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        res.status(500).json({ erro: erro.message, detalhes: erro.errors?.map(e => e.message) });
     }
 }
 

@@ -23,7 +23,7 @@ const Anotacao = sequelize.define('Anotacao', {
 
 },
 {
-    tableName: 'anotacoes',
+    tableName: 'anotacao',
     timestamps: false
 });
 

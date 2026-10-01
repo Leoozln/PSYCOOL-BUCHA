@@ -27,7 +27,7 @@ const consulta = sequelize.define('consulta', {
         unique: true,
         validate: {
             is: {
-                args: /^https:\/\/meet\.google\.com\/[A-Za-z_.%+?=&]{1,100}$/i,
+                args: /^https:\/\/meet\.google\.com\/[A-Za-z_.%+?=&-]{1,100}$/i,
                 msg: "O link precisa ser um link válido do Google Meet"
             }
         }

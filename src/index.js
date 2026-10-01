@@ -28,8 +28,8 @@ app.use('/empresa', empresaRoutes);
 const agendaRoutes = require('./3routes/agendaRoutes');
 app.use('/agenda', agendaRoutes);
 
-const anotacoesRoutes = require('./3routes/anotacaoRoutes');
-app.use('/anotacoes', anotacoesRoutes);
+const anotacaoRoutes = require('./3routes/anotacaoRoutes');
+app.use('/anotacao', anotacaoRoutes);
 
 const avaliacaoRoutes = require('./3routes/avaliacaoRoutes');
 app.use('/avaliacao', avaliacaoRoutes);

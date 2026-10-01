@@ -35,7 +35,7 @@ async function inserir(req, res) {
             texto_avaliacao,
             avaliacao_consulta
         });
-        res.status(201).json(nova);
+        res.status(201).json(avaliacaonova);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }

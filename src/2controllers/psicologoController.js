@@ -46,7 +46,7 @@ async function inserir(req,res){
                 ativo: true
             }, { transaction: t });
             const psicologonovo = await Psicologo.create({
-                id_psicologo: usuario.id_usuario,
+                id_psicologo: usuarionovo.id_usuario,
                 nome_psicologo,
                 crp_psicologo,
                 contato_psicologo,
