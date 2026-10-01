@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const controller = require('../2controllers/anotacoesController');
+const controller = require('../2controllers/anotacaoController');
 
 router.get('/', controller.listar);
 router.get('/:id', controller.buscar);

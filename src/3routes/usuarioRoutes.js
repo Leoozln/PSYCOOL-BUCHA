@@ -2,7 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-const controller = require('../2controllers/usuarioControllers');
+const controller = require('../2controllers/usuarioController');
 
 router.get('/',controller.listar);
 

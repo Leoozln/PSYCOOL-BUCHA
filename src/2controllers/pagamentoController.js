@@ -1,9 +1,9 @@
-const pagamento = require('../1models/pagamento');
+const { Pagamento } = require('../1models');
 
 async function listar(req, res) {
     try {
-        const registros = await pagamento.findAll();
-        res.json(registros);
+        const pagamentos = await Pagamento.findAll();
+        res.json(pagamentos);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -11,9 +11,11 @@ async function listar(req, res) {
 
 async function buscar(req, res) {
     try {
-        const item = await pagamento.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Pagamento não encontrado.' });
-        res.json(item);
+        const pagamento = await Pagamento.findByPk(req.params.id);
+        if (!pagamento) {
+            return res.status(404).json({ erro: 'Pagamento não encontrado!' });
+        }
+        res.json(pagamento);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -21,13 +23,19 @@ async function buscar(req, res) {
 
 async function inserir(req, res) {
     try {
-        const novo = await pagamento.create({
-            id_agenda_pagamento: req.body.id_agenda_pagamento,
-            preco_final: req.body.preco_final,
-            forma_pagamento: req.body.forma_pagamento,
-            situacao_pagamento: req.body.situacao_pagamento
+        const {
+            id_agenda_pagamento,
+            preco_final,
+            forma_pagamento,
+            situacao_pagamento
+        } = req.body;
+        const pagamentonovo = await Pagamento.create({
+            id_agenda_pagamento,
+            preco_final,
+            forma_pagamento,
+            situacao_pagamento
         });
-        res.status(201).json(novo);
+        res.status(201).json(pagamentonovo);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -35,17 +43,23 @@ async function inserir(req, res) {
 
 async function atualizar(req, res) {
     try {
-        const item = await pagamento.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Pagamento não encontrado.' });
-
-        await item.update({
-            id_agenda_pagamento: req.body.id_agenda_pagamento,
-            preco_final: req.body.preco_final,
-            forma_pagamento: req.body.forma_pagamento,
-            situacao_pagamento: req.body.situacao_pagamento
+        const pagamento = await Pagamento.findByPk(req.params.id);
+        if (!pagamento) {
+            return res.status(404).json({ erro: 'Pagamento não encontrado!' });
+        }
+        const {
+            id_agenda_pagamento,
+            preco_final,
+            forma_pagamento,
+            situacao_pagamento
+        } = req.body;
+        await pagamento.update({
+            id_agenda_pagamento,
+            preco_final,
+            forma_pagamento,
+            situacao_pagamento
         });
-
-        res.json(item);
+        res.json(pagamento);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -53,10 +67,12 @@ async function atualizar(req, res) {
 
 async function excluir(req, res) {
     try {
-        const item = await pagamento.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Pagamento não encontrado.' });
-        await item.destroy();
-        res.json({ mensagem: "Pagamento removido." });
+        const pagamento = await Pagamento.findByPk(req.params.id);
+        if (!pagamento) {
+            return res.status(404).json({ erro: 'Pagamento não encontrado!' });
+        }
+        await pagamento.destroy();
+        res.json({ mensagem: "Pagamento removido!" });
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }

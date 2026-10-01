@@ -1,9 +1,9 @@
-const avaliacao = require('../1models/avaliacao');
+const { Avaliacao } = require('../1models');
 
 async function listar(req, res) {
     try {
-        const registros = await avaliacao.findAll();
-        res.json(registros);
+        const avaliacoes = await Avaliacao.findAll();
+        res.json(avaliacoes);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -11,9 +11,11 @@ async function listar(req, res) {
 
 async function buscar(req, res) {
     try {
-        const item = await avaliacao.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Avaliação não encontrada.' });
-        res.json(item);
+        const avaliacao = await Avaliacao.findByPk(req.params.id);
+        if (!avaliacao) {
+             return res.status(404).json({ erro: 'Avaliação não encontrada!' });
+        }
+        res.json(avaliacao);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -21,11 +23,17 @@ async function buscar(req, res) {
 
 async function inserir(req, res) {
     try {
-        const nova = await avaliacao.create({
-            avaliacao_psicologo: req.body.avaliacao_psicologo,
-            estrela_avaliacao: req.body.estrela_avaliacao,
-            texto_avaliacao: req.body.texto_avaliacao,
-            avaliacao_consulta: req.body.avaliacao_consulta
+        const {
+            avaliacao_psicologo,
+            estrela_avaliacao,
+            texto_avaliacao,
+            avaliacao_consulta
+        } = req.body;
+        const avaliacaonova = await Avaliacao.create({
+            avaliacao_psicologo,
+            estrela_avaliacao,
+            texto_avaliacao,
+            avaliacao_consulta
         });
         res.status(201).json(nova);
     } catch (erro) {
@@ -35,17 +43,22 @@ async function inserir(req, res) {
 
 async function atualizar(req, res) {
     try {
-        const item = await avaliacao.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Avaliação não encontrada.' });
-
-        await item.update({
-            avaliacao_psicologo: req.body.avaliacao_psicologo,
-            estrela_avaliacao: req.body.estrela_avaliacao,
-            texto_avaliacao: req.body.texto_avaliacao,
-            avaliacao_consulta: req.body.avaliacao_consulta
+        const avaliacao = await Avaliacao.findByPk(req.params.id);
+        if (!avaliacao) {
+            return res.status(404).json({ erro: 'Avaliação não encontrada!' });
+        } const {
+            avaliacao_psicologo,
+            estrela_avaliacao,
+            texto_avaliacao,
+            avaliacao_consulta
+        } = req.body;
+        await avaliacao.update({
+            avaliacao_psicologo,
+            estrela_avaliacao,
+            texto_avaliacao,
+            avaliacao_consulta
         });
-
-        res.json(item);
+        res.json(avaliacao);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
@@ -53,10 +66,12 @@ async function atualizar(req, res) {
 
 async function excluir(req, res) {
     try {
-        const item = await avaliacao.findByPk(req.params.id);
-        if (!item) return res.status(404).json({ erro: 'Avaliação não encontrada.' });
-        await item.destroy();
-        res.json({ mensagem: "Avaliação removida." });
+        const avaliacao = await Avaliacao.findByPk(req.params.id);
+        if (!avaliacao) {
+            return res.status(404).json({ erro: 'Avaliação não encontrada!' });
+        }
+        await avaliacao.destroy();
+        res.json({ mensagem: "Avaliação removida!" });
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
