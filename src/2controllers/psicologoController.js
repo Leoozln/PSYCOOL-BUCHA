@@ -1,19 +1,23 @@
 const { Usuario, Psicologo } = require('../1models');
 const sequelize = require('../config/database');
+
+const inclusaoUsuario = {
+    model: Usuario,
+    attributes: ['email_usuario']
+};
  
 async function listar(req,res){
     try{
-        const psicologos = await Psicologo.findAll();
+        const psicologos = await Psicologo.findAll({ include: [inclusaoUsuario] });
         res.json(psicologos);
-    }catch(erro) {
+    } catch (erro) {
         res.status(500).json({ erro: erro.message });
-    }
- 
+    } 
 }
  
 async function buscar(req,res){
     try{
-        const psicologo = await Psicologo.findByPk(req.params.id);
+        const psicologo = await Psicologo.findByPk(req.params.id, { include: [inclusaoUsuario] });
         if (!psicologo) {
             return res.status(404).json({ erro: 'Psicólogo não encontrado!'});
         }
@@ -38,11 +42,14 @@ async function inserir(req,res){
             email_usuario,
             senha_usuario
         } = req.body;
+        if (!email_usuario || !senha_usuario) {
+            return res.status(400).json({ erro: 'Email e senha do usuário são obrigatórios!' });
+        }
         const resultado = await sequelize.transaction(async (t) => {
             const usuarionovo = await Usuario.create({
                 tipo_usuario: 'Psicologo',
-                email_usuario: email_usuario || `${contato_psicologo}@temp.com`,
-                senha_usuario: senha_usuario || '123456',
+                email_usuario,
+                senha_usuario,
                 ativo: true
             }, { transaction: t });
             const psicologonovo = await Psicologo.create({
@@ -57,7 +64,10 @@ async function inserir(req,res){
                 foto_psicologo,
                 descricao_psicologo
             }, { transaction: t });
-            return psicologonovo;
+            return await Psicologo.findByPk(psicologonovo.id_psicologo, {
+                include: [inclusaoUsuario],
+                transaction: t
+            });
         });
         res.status(201).json(resultado);
     } catch (erro) {
@@ -94,7 +104,10 @@ async function atualizar(req,res){
             foto_psicologo,
             descricao_psicologo
         });
-        res.json(psicologo);
+        const atualizado = await Psicologo.findByPk(psicologo.id_psicologo, {
+            include: [inclusaoUsuario]
+        });
+        res.json(atualizado);
     } catch (erro) {
         res.status(500).json({ erro: erro.message });
     }
