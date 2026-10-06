@@ -6,9 +6,13 @@ async function listar(req,res){
         const psicologos = await Psicologo.findAll();
         res.json(psicologos);
     }catch(erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
+        });
         res.status(500).json({ erro: erro.message });
     }
- 
 }
  
 async function buscar(req,res){
@@ -18,11 +22,16 @@ async function buscar(req,res){
             return res.status(404).json({ erro: 'Psicólogo não encontrado!'});
         }
         res.json(psicologo);
-    } catch (erro) {
-        res.status(500).json({erro:erro.message});
+    }catch(erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
+        });
+        res.status(500).json({ erro: erro.message });
     }
 }
- 
+
 async function inserir(req,res){
     try {
         const {
@@ -60,8 +69,12 @@ async function inserir(req,res){
             return psicologonovo;
         });
         res.status(201).json(resultado);
-    } catch (erro) {
-        console.error(erro);
+    }catch(erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
+        });
         res.status(500).json({ erro: erro.message });
     }
 }
@@ -95,10 +108,16 @@ async function atualizar(req,res){
             descricao_psicologo
         });
         res.json(psicologo);
-    } catch (erro) {
+    } catch(erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
+        });
         res.status(500).json({ erro: erro.message });
     }
 }
+
  
 async function excluir(req,res){
     try{
@@ -108,11 +127,16 @@ async function excluir(req,res){
         }
         await psicologo.destroy();
         res.json({ mensagem: 'Psicólogo removido!'});
-    } catch (erro) {
+    } catch(erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
+        });
         res.status(500).json({ erro: erro.message });
     }
 }
- 
+
 module.exports = {
     listar,
     buscar,
