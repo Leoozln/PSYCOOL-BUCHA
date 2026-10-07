@@ -49,6 +49,20 @@ document.getElementById('contato').addEventListener('input', (e) => {
 
 //<<<<FUNÇÕES ACIMA UTILIZADAS NO CAMPO 'TELEFONE' DO FORMULÁRIO>>>>
 
+//FUNÇÕES ABAIXO TRADUZEM OS ERROS
+
+function traduzirErro(status, dados) {
+  if (status === 404) {
+    return 'Registro não encontrado'; //REGISTRO NÃO ENCONTRADO (DIFICILMENTE SERÁ USADO EM CADASTRO MAS SERA REAPROVEITADO EM OUTROS CODIGOS)
+  }
+
+  if (dados && dados.erro && dados.erro.toLowerCase().includes('validation')) {
+    return 'Verifique os dados informados: pode haver um campo inválido ou já cadastrado.'; //VALORES DUPLICADOS
+  }
+
+  return 'Ocorreu um erro inesperado ao processar seu cadastro. Tente novamente em alguns instantes.'; // ERRO INESPERADO
+}
+
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -83,16 +97,23 @@ form.addEventListener('submit', async (e) => {
       resultado.className = 'ok';
       resultado.textContent = 'Cadastrado com sucesso!\n\n' + JSON.stringify(dados, null, 2);
       form.reset();
-    } else {
+      } 
+    
+    else {
       resultado.className = 'erro';
-      resultado.textContent = 'Erro ao cadastrar (status ' + resp.status + '):\n\n' + JSON.stringify(dados, null, 2);
+      resultado.textContent = traduzirErro(resp.status, dados);
+      resultado.style.display = 'block';
+      }  
+    } 
+  
+    catch (err) {
+      resultado.className = 'erro';
+      resultado.textContent = 'Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente em instantes.';
+    resultado.style.display = 'block';
     }
-  } catch (err) {
-    resultado.className = 'erro';
-    resultado.textContent = 'Falha na requisição: ' + err.message +
-      '\n\nSe o erro for de CORS ou "Failed to fetch", confirme que o servidor Express está rodando e considere adicionar o middleware "cors" no index.js.';
-  } finally {
+  
+    finally {
     btnEnviar.disabled = false;
     btnEnviar.textContent = 'Cadastrar';
-  }
-});
+    }
+    });
