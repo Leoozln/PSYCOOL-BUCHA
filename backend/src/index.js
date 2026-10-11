@@ -7,6 +7,7 @@ require('dotenv').config({
 });
 
 const express = require('express');
+const cors = require('cors');
 const app = express()
 const port = 3000
 
@@ -15,6 +16,11 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./swagger/swagger');
 
 app.get('/', (req, res) => { res.send('Olá mundo !'); })
+
+// Permite que o front-end Vite acesse o back-end.
+app.use(cors({
+    origin: 'http://localhost:5173'
+}));
 
 const pool = require('./db');
 app.use(express.json());
