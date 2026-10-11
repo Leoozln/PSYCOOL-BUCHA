@@ -5,6 +5,11 @@ async function listar(req, res){
         const usuarios = await Usuario.findAll();
         res.json(usuarios);
     }catch(erro){
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
+        });
         res.status(500).json({erro: erro.message});
     }
 }
@@ -17,6 +22,11 @@ async function buscar(req, res){
         }
         res.json(usuario);
     }catch(erro){
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
+        });
         res.status(500).json({erro: erro.message});
     }
 }
@@ -37,7 +47,12 @@ async function inserir(req, res) {
         });
         res.status(201).json(usuarionovo);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
+        });
+        res.status(500).json({erro: erro.message});
     }
 }
 
@@ -61,6 +76,11 @@ async function atualizar(req, res){
         });
         res.json(usuario);
     }catch(erro){
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
+        });
         res.status(500).json({erro: erro.message});
     }
 }
@@ -74,6 +94,11 @@ async function excluir(req, res){
         await usuario.destroy();
         res.json({ mensagem: "Usuario removido com sucesso."});
     } catch (erro) {
+        console.error({
+            nome: erro.name,
+            mensagem: erro.message,
+            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
+        });
         res.status(500).json({erro: erro.message});
     }
 }
