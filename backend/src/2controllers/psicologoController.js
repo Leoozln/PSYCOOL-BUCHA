@@ -1,5 +1,6 @@
 const { Usuario, Psicologo } = require('../1models');
 const sequelize = require('../config/database');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 const inclusaoUsuario = {
     model: Usuario,
@@ -11,12 +12,7 @@ async function listar(req,res){
         const psicologos = await Psicologo.findAll({ include: [inclusaoUsuario] });
         res.json(psicologos);
     }catch(erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
-        });
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
  
@@ -28,12 +24,7 @@ async function buscar(req,res){
         }
         res.json(psicologo);
     }catch(erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
-        });
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -81,12 +72,7 @@ async function inserir(req,res){
         });
         res.status(201).json(resultado);
     }catch(erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
-        });
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
  
@@ -120,12 +106,7 @@ async function atualizar(req,res){
         });
         res.json(psicologo);
     } catch(erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
-        });
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -139,12 +120,7 @@ async function excluir(req,res){
         await psicologo.destroy();
         res.json({ mensagem: 'Psicólogo removido!'});
     } catch(erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) :undefined
-        });
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
