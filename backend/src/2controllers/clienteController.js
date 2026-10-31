@@ -1,11 +1,12 @@
 const { Cliente } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req,res){
     try{
         const clientes = await Cliente.findAll();
         res.json(clientes);
     }catch(erro){
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -17,7 +18,7 @@ async function buscar(req,res){
         }
         res.json(cliente);
     }catch(erro){
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -26,7 +27,7 @@ async function inserir(req,res){
         const clientenovo = await Cliente.create(req.body);
         res.status(201).json(clientenovo);
     }catch(erro){
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -39,7 +40,7 @@ async function atualizar(req,res){
         await cliente.update(req.body);
         res.json(cliente);
     }catch(erro){
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -52,7 +53,7 @@ async function excluir(req,res){
         await cliente.destroy();
         res.json({ mensagem:"Cliente removido!" });
     }catch(erro){
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 
 }

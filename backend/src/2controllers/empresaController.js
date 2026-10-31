@@ -1,11 +1,12 @@
 const { Empresa } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res) {
     try {
         const empresas = await Empresa.findAll();
         res.json(empresas);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -17,7 +18,7 @@ async function buscar(req, res) {
         }
         res.json(empresa);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -47,7 +48,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(empresanova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message, detalhes: erro.errors?.map(e => e.message) });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -78,7 +79,7 @@ async function atualizar(req, res) {
         });
         res.json(empresa);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -91,7 +92,7 @@ async function excluir(req, res) {
         await empresa.destroy();
         res.json({ mensagem: "Empresa removida!" });
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 

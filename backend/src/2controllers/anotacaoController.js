@@ -1,11 +1,12 @@
 const { Anotacao } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res) {
     try {
         const anotacoes = await Anotacao.findAll();
         res.json(anotacoes);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -15,7 +16,7 @@ async function buscar(req, res) {
         if (!anotacao) return res.status(404).json({ erro: 'Anotação não encontrada!' });
         res.json(anotacao);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -33,7 +34,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(anotacaonova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -54,7 +55,7 @@ async function atualizar(req, res) {
         });
         res.json(anotacao);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -67,7 +68,7 @@ async function excluir(req, res) {
         await anotacao.destroy();
         res.json({ mensagem: "Anotação removida!" });
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 

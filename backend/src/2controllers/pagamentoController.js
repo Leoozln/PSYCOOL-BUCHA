@@ -1,11 +1,12 @@
 const { Pagamento } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res) {
     try {
         const pagamentos = await Pagamento.findAll();
         res.json(pagamentos);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -17,7 +18,7 @@ async function buscar(req, res) {
         }
         res.json(pagamento);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -37,7 +38,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(pagamentonovo);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -61,7 +62,7 @@ async function atualizar(req, res) {
         });
         res.json(pagamento);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -74,7 +75,7 @@ async function excluir(req, res) {
         await pagamento.destroy();
         res.json({ mensagem: "Pagamento removido!" });
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
