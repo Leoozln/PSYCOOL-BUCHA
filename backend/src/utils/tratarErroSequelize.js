@@ -16,8 +16,9 @@ const CAMPOS_UNICOS = {
 };
 
 // Códigos de erro do PostgreSQL que significam "dado enviado fora do aceito".
-// 23502 campo obrigatório vazio, 23514 restrição CHECK, 22001 texto longo demais, 22P02 formato inválido.
-const CODIGOS_DADO_INVALIDO = ['23502', '23514', '22001', '22P02'];
+// 23502 campo obrigatório vazio, 23514 restrição CHECK, 22001 texto longo demais, 22P02 formato inválido,
+// 22003 número fora da faixa do campo (confirmado em teste com preço gigante na agenda).
+const CODIGOS_DADO_INVALIDO = ['23502', '23514', '22001', '22P02', '22003'];
 
 // A trigger verificacao_conflito_agenda (banco) lança RAISE EXCEPTION (código P0001) quando o psicólogo
 // já tem consulta no horário. Só esta mensagem conhecida é traduzida; outras exceções do banco ficam como 500.
