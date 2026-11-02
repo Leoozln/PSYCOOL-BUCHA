@@ -10,9 +10,16 @@ const CAMPOS_UNICOS = {
     contato_cliente: { codigo: 'telefone', rotulo: 'telefone' },
     contato_empresa: { codigo: 'telefone', rotulo: 'telefone' },
     cpf_cliente: { codigo: 'cpf', rotulo: 'CPF' },
+    cpf_psicologo: { codigo: 'cpf', rotulo: 'CPF' },
     cnpj_empresa: { codigo: 'cnpj', rotulo: 'CNPJ' },
     convenio_empresa: { codigo: 'convenio', rotulo: 'convênio' },
     link_consulta: { codigo: 'link', rotulo: 'link da consulta' }
+};
+
+// Validadores no nível do model (que olham mais de um campo) vêm com o nome da função no lugar do campo.
+// Aqui eles são traduzidos para o campo que o cliente precisa corrigir.
+const CAMPO_DO_VALIDADOR = {
+    motivoObrigatorioSeReprovado: 'motivo_reprovacao'
 };
 
 // Códigos de erro do PostgreSQL que significam "dado enviado fora do aceito".
@@ -70,7 +77,7 @@ function tratarErroSequelize(erro, res) {
         return res.status(400).json({
             erro: 'dados_invalidos',
             mensagem: 'Dados inválidos.',
-            campos: (erro.errors || []).map(e => e.path).filter(Boolean)
+            campos: (erro.errors || []).map(e => CAMPO_DO_VALIDADOR[e.path] || e.path).filter(Boolean)
         });
     }
 

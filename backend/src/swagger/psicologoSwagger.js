@@ -3,6 +3,7 @@ const { campo, lista, erros, gerarCrud } = require('./comum');
 const dadosDoPsicologo = {
     nome_psicologo: campo('string', 'Teste Automatizado Alfa', 'Só letras e espaços, mínimo de 4 caracteres'),
     crp_psicologo: campo('string', '99/99991', 'Formato 00/00000 ou 00/000000. Único'),
+    cpf_psicologo: campo('string', '987.654.321-00', 'Formato 000.000.000-00. Único. Obrigatório: não aceita nulo nem vazio'),
     contato_psicologo: campo('string', '11999990001', 'DDD + número, 11 dígitos. Único'),
     diploma_psicologo: lista(['Psicologia - Universidade Teste'], 'Opcional'),
     genero_psicologo: campo('string', 'OUTRO', 'Gênero do psicólogo', {
@@ -11,7 +12,8 @@ const dadosDoPsicologo = {
     data_nascimento_psicologo: campo('string', '1990-01-15', 'Idade mínima de 21 anos', { format: 'date' }),
     especialidade_psicologo: lista(['Teste'], 'Pelo menos uma especialidade'),
     foto_psicologo: campo('string', 'https://exemplo.teste/foto.png', 'Opcional'),
-    descricao_psicologo: campo('string', 'Cadastro de teste', 'Opcional')
+    descricao_psicologo: campo('string', 'Cadastro de teste', 'Opcional'),
+    abordagem_psicologo: campo('string', 'TCC', 'Opcional. Abordagem exibida no perfil e na busca. Até 100 caracteres')
 };
 
 // Só o POST cria o usuário junto; o PUT altera apenas os dados do psicólogo.
@@ -32,7 +34,7 @@ module.exports = gerarCrud({
 
     propriedades: propriedadesCadastro,
     obrigatorios: [
-        'nome_psicologo', 'crp_psicologo', 'contato_psicologo', 'genero_psicologo',
+        'nome_psicologo', 'crp_psicologo', 'cpf_psicologo', 'contato_psicologo', 'genero_psicologo',
         'data_nascimento_psicologo', 'especialidade_psicologo', 'email_usuario', 'senha_usuario'
     ],
     propriedadesAlterar: dadosDoPsicologo,
@@ -46,9 +48,11 @@ module.exports = gerarCrud({
 
     errosCriar: [
         erros.duplicado('crp', 'CRP'),
+        erros.duplicado('cpf', 'CPF'),
         erros.duplicado('email', 'e-mail'),
         erros.duplicado('telefone', 'telefone'),
         erros.dadosInvalidos('CRP fora do formato', ['crp_psicologo']),
+        erros.dadosInvalidos('CPF ausente, nulo ou fora do formato 000.000.000-00', ['cpf_psicologo']),
         erros.dadosInvalidos('Campo obrigatório ausente', ['nome_psicologo']),
         {
             status: 400,
@@ -58,8 +62,10 @@ module.exports = gerarCrud({
     ],
     errosAlterar: [
         erros.duplicado('crp', 'CRP'),
+        erros.duplicado('cpf', 'CPF'),
         erros.duplicado('telefone', 'telefone'),
-        erros.dadosInvalidos('CRP fora do formato', ['crp_psicologo'])
+        erros.dadosInvalidos('CRP fora do formato', ['crp_psicologo']),
+        erros.dadosInvalidos('CPF nulo ou fora do formato 000.000.000-00', ['cpf_psicologo'])
     ],
     errosExcluir: [
         erros.registroEmUso('Psicólogo com agenda, consulta ou avaliação ligadas')

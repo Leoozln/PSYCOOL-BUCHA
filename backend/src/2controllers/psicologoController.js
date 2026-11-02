@@ -33,6 +33,7 @@ async function inserir(req,res){
         const {
             nome_psicologo,
             crp_psicologo,
+            cpf_psicologo,
             contato_psicologo,
             diploma_psicologo,
             genero_psicologo,
@@ -40,6 +41,7 @@ async function inserir(req,res){
             especialidade_psicologo,
             foto_psicologo,
             descricao_psicologo,
+            abordagem_psicologo,
             email_usuario,
             senha_usuario
         } = req.body;
@@ -57,13 +59,15 @@ async function inserir(req,res){
                 id_psicologo: usuarionovo.id_usuario,
                 nome_psicologo,
                 crp_psicologo,
+                cpf_psicologo,
                 contato_psicologo,
                 diploma_psicologo: diploma_psicologo || [],
                 genero_psicologo,
                 data_nascimento_psicologo,
                 especialidade_psicologo,
                 foto_psicologo,
-                descricao_psicologo
+                descricao_psicologo,
+                abordagem_psicologo
             }, { transaction: t });
             return await Psicologo.findByPk(psicologonovo.id_psicologo, {
                 include: [inclusaoUsuario],
@@ -85,24 +89,28 @@ async function atualizar(req,res){
         const {
             nome_psicologo,
             crp_psicologo,
+            cpf_psicologo,
             contato_psicologo,
             diploma_psicologo,
             genero_psicologo,
             data_nascimento_psicologo,
             especialidade_psicologo,
             foto_psicologo,
-            descricao_psicologo
+            descricao_psicologo,
+            abordagem_psicologo
         } = req.body;
         await psicologo.update({
             nome_psicologo,
             crp_psicologo,
+            cpf_psicologo,
             contato_psicologo,
             diploma_psicologo,
             genero_psicologo,
             data_nascimento_psicologo,
             especialidade_psicologo,
             foto_psicologo,
-            descricao_psicologo
+            descricao_psicologo,
+            abordagem_psicologo
         });
         res.json(psicologo);
     } catch(erro) {
