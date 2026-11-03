@@ -1,11 +1,12 @@
 const { Consulta } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res) {
     try {
         const consultas = await Consulta.findAll();
         res.json(consultas);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -17,7 +18,7 @@ async function buscar(req, res) {
         }
         res.json(consulta);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -39,7 +40,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(consultanova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -65,7 +66,7 @@ async function atualizar(req, res) {
         });
         res.json(consulta);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -78,7 +79,7 @@ async function excluir(req, res) {
         await consulta.destroy();
         res.json({ mensagem: "Consulta removida!" });
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 

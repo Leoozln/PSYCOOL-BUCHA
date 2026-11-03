@@ -1,11 +1,12 @@
 const { Agenda } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req,res){
     try{
         const agendas = await Agenda.findAll();
         res.json(agendas);
     }catch(erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 
 }
@@ -18,7 +19,7 @@ async function buscar(req,res){
         }
         res.json(agenda);
     } catch (erro) {
-        res.status(500).json({erro:erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -44,7 +45,7 @@ async function inserir(req,res){
         });
         res.status(201).json(agendanova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -74,7 +75,7 @@ async function atualizar(req,res){
         });
         res.json(agenda);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -87,7 +88,7 @@ async function excluir(req,res){
         await agenda.destroy();
         res.json({ mensagem: 'Agenda removida com sucesso!'});
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 

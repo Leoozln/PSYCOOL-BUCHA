@@ -30,6 +30,16 @@ const psicologo = sequelize.define('psicologo', {
         }
     },
 
+    // Obrigatório no model. A coluna do banco ainda aceita nulo porque os cadastros antigos não têm CPF.
+    cpf_psicologo: {
+        type: DataTypes.STRING(14),
+        allowNull: false,
+        unique: true,
+        validate: {
+            is: /^[0-9]{3}\.[0-9]{3}\.[0-9]{3}-[0-9]{2}$/
+        }
+    },
+
     contato_psicologo: {
         type: DataTypes.STRING(11),
         allowNull: false,
@@ -99,6 +109,11 @@ const psicologo = sequelize.define('psicologo', {
         allowNull: true
     },
 
+    abordagem_psicologo: {
+        type: DataTypes.STRING(100),
+        allowNull: true
+    },
+
     status_validacao: {
         type: DataTypes.STRING(20),
         allowNull: false,
@@ -108,10 +123,32 @@ const psicologo = sequelize.define('psicologo', {
         }
     },
 
+    // Motivo mostrado ao psicólogo quando o administrador reprova o cadastro (RF026).
+    motivo_reprovacao: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+
+    // Preenchida na aprovação e em cada reverificação anual do CRP (RNF005).
+    data_verificacao_crp: {
+        type: DataTypes.DATEONLY,
+        allowNull: true
+    },
+
 }, {
 
     tableName: 'psicologo',
     timestamps: false,
+    validate: {
+        // Espelha o CHECK motivo_reprovacao_check do banco, mas também recusa motivo vazio ou só com espaços,
+        // que o CHECK aceita. Fica no nível do model porque validador de campo não roda quando o valor é nulo.
+        motivoObrigatorioSeReprovado() {
+            const motivo = this.motivo_reprovacao;
+            if (this.status_validacao === 'REPROVADO' && (!motivo || !String(motivo).trim())) {
+                throw new Error('É necessário informar o motivo da reprovação.');
+            }
+        }
+    },
     indexes: [
         {
         unique: true,

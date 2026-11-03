@@ -1,16 +1,12 @@
 const { Usuario } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res){
     try{
         const usuarios = await Usuario.findAll();
         res.json(usuarios);
     }catch(erro){
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
-        });
-        res.status(500).json({erro: erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -22,12 +18,7 @@ async function buscar(req, res){
         }
         res.json(usuario);
     }catch(erro){
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
-        });
-        res.status(500).json({erro: erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -47,12 +38,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(usuarionovo);
     } catch (erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
-        });
-        res.status(500).json({erro: erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -76,12 +62,7 @@ async function atualizar(req, res){
         });
         res.json(usuario);
     }catch(erro){
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
-        });
-        res.status(500).json({erro: erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -94,12 +75,7 @@ async function excluir(req, res){
         await usuario.destroy();
         res.json({ mensagem: "Usuario removido com sucesso."});
     } catch (erro) {
-        console.error({
-            nome: erro.name,
-            mensagem: erro.message,
-            detalhes: erro.errors ? erro.errors.map(e => ({campo: e.path, mensagem: e.message})) : undefined
-        });
-        res.status(500).json({erro: erro.message});
+        tratarErroSequelize(erro, res);
     }
 }
 

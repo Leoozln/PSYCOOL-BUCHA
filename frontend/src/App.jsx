@@ -1,3 +1,5 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
 /* Importa a tela de cadastro de psicólogo. Assim, podemos utilizar essa tela dentro do App. */
 
 import CadastroPsicologo from './pages/CadastroPsicologo';
@@ -6,8 +8,17 @@ import CadastroPsicologo from './pages/CadastroPsicologo';
 function App() {
     // O return define o que será exibido na tela.
     return (
-        // Exibe o componente de cadastro de psicólogo.
-        <CadastroPsicologo />
+        <BrowserRouter>
+            <Header />
+
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/pessoas" element={<Pessoas />} />
+                <Route path="/cargos" element={<Cargos />} />
+            </Routes>
+
+            <Footer />
+        </BrowserRouter>
     );
 }
 

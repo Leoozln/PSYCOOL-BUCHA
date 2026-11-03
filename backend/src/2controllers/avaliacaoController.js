@@ -1,11 +1,12 @@
 const { Avaliacao } = require('../1models');
+const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
 async function listar(req, res) {
     try {
         const avaliacoes = await Avaliacao.findAll();
         res.json(avaliacoes);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -17,7 +18,7 @@ async function buscar(req, res) {
         }
         res.json(avaliacao);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -37,7 +38,7 @@ async function inserir(req, res) {
         });
         res.status(201).json(avaliacaonova);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -60,7 +61,7 @@ async function atualizar(req, res) {
         });
         res.json(avaliacao);
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
@@ -73,7 +74,7 @@ async function excluir(req, res) {
         await avaliacao.destroy();
         res.json({ mensagem: "Avaliação removida!" });
     } catch (erro) {
-        res.status(500).json({ erro: erro.message });
+        tratarErroSequelize(erro, res);
     }
 }
 
