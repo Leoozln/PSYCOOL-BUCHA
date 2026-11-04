@@ -1,23 +1,20 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 /* Importa a tela de cadastro de psicólogo. Assim, podemos utilizar essa tela dentro do App. */
 
-import CadastroPsicologo from './pages/CadastroPsicologo';
+import CadastroPsicologo from './pages/CadastroPsicologo/CadastroPsicologo';
+import Agenda from './pages/Agenda/Agenda';
 
 // Cria o componente principal da aplicação React.
 function App() {
     // O return define o que será exibido na tela.
     return (
         <BrowserRouter>
-            <Header />
-
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/pessoas" element={<Pessoas />} />
-                <Route path="/cargos" element={<Cargos />} />
+                <Route path="/" element={<Navigate to="/agenda" />} />
+                <Route path="/cadastro-psicologo" element={<CadastroPsicologo />} />
+                <Route path="/agenda" element={<Agenda />} />
             </Routes>
-
-            <Footer />
         </BrowserRouter>
     );
 }
