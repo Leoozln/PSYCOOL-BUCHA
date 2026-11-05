@@ -22,7 +22,6 @@ app.use(cors({
     origin: 'http://localhost:5173'
 }));
 
-const pool = require('./db');
 app.use(express.json());
 
 // Informa ao Express onde estão os arquivos do front-end (HTML, CSS, JavaScript e imagens),
