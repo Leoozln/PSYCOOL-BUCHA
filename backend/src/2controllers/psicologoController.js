@@ -28,6 +28,8 @@ async function buscar(req,res){
     }
 }
 
+// TODO: fluxo legado (exige senha e não passa pela sessão do Google nem pelo aceite do termo).
+// Remover junto com a rota POST /psicologo quando a SCRUM-204 migrar o front para cadastrarPsicologo.
 async function inserir(req,res){
     try {
         const {
@@ -80,6 +82,31 @@ async function inserir(req,res){
     }
 }
  
+// POST /cadastro/psicologo
+// Cadastro do psicólogo com login pelo Google: não recebe senha, e o e-mail NUNCA vem do corpo,
+// vem do cadastro pendente guardado na sessão. (Diferente do inserir, que é o CRUD antigo com senha.)
+async function cadastrarPsicologo(req,res){
+    try{
+        const {
+            nome_psicologo,
+            cpf_psicologo,
+            data_nascimento_psicologo,
+            contato_psicologo,
+            crp_psicologo,
+            especialidade_psicologo,
+            diploma_psicologo,
+            genero_psicologo,
+            abordagem_psicologo,
+            descricao_psicologo
+        } = req.body;
+
+        // Esqueleto: validações (passo 4) e gravação (passo 6) entram nos próximos passos.
+        res.status(501).json({ erro: 'nao_implementado', mensagem: 'Cadastro do psicólogo em construção.' });
+    }catch(erro) {
+        tratarErroSequelize(erro, res);
+    }
+}
+
 async function atualizar(req,res){
     try{
         const psicologo = await Psicologo.findByPk(req.params.id);
@@ -136,6 +163,7 @@ module.exports = {
     listar,
     buscar,
     inserir,
+    cadastrarPsicologo,
     atualizar,
     excluir
 };

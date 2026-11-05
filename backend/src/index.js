@@ -40,6 +40,9 @@ app.use('/cliente', clienteRoutes);
 const psicologoRoutes = require('./3routes/psicologoRoutes');
 app.use('/psicologo', psicologoRoutes);
 
+const cadastroRoutes = require('./3routes/cadastroRoutes');
+app.use('/cadastro', cadastroRoutes);
+
 const empresaRoutes = require('./3routes/empresaRoutes');
 app.use('/empresa', empresaRoutes);
 
