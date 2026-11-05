@@ -9,15 +9,29 @@ const Usuario = sequelize.define('usuario', {
         autoIncrement: true
     },
 
+    google_id: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+        unique: true
+    },
+
+    google_acess_token: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+
+    google_refresh_token: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+
     tipo_usuario: {
-        type: DataTypes.STRING(20)
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        validate: { isIN: [['Cliente', 'Psicologo', 'Empresa', 'Administrador']]}
     },
 
     email_usuario: {
-        type: DataTypes.STRING(255)
-    },
-
-    senha_usuario: {
         type: DataTypes.STRING(255)
     },
     
