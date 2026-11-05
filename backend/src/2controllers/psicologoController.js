@@ -1,4 +1,5 @@
-const { Usuario, Psicologo } = require('../1models');
+const { Op } = require('sequelize');
+const { Usuario, Psicologo, Consulta, Cliente, Agenda } = require('../1models');
 const sequelize = require('../config/database');
 const tratarErroSequelize = require('../utils/tratarErroSequelize');
 
@@ -132,10 +133,48 @@ async function excluir(req,res){
     }
 }
 
+// Consultas futuras do psicólogo logado (req.user), da mais próxima para a mais distante.
+// Só entram as consultas cuja agenda está AGENDADO.
+async function listarMinhasConsultas(req, res) {
+    try {
+        const consultas = await Consulta.findAll({
+            attributes: ['id_consulta', 'data_hora_consulta', 'link_consulta'],
+            where: {
+                id_psicologo_responsavel: req.user.id_usuario,
+                data_hora_consulta: { [Op.gte]: new Date() }
+            },
+            include: [
+                {
+                    model: Cliente,
+                    attributes: ['nome_cliente']
+                },
+                {
+                    model: Agenda,
+                    attributes: ['status_agenda'],
+                    where: { status_agenda: 'AGENDADO' },
+                    required: true
+                }
+            ],
+            order: [['data_hora_consulta', 'ASC']]
+        });
+
+        res.json(consultas.map((consulta) => ({
+            id_consulta: consulta.id_consulta,
+            data_hora: consulta.data_hora_consulta,
+            nome_paciente: consulta.Cliente ? consulta.Cliente.nome_cliente : null,
+            status: consulta.Agenda.status_agenda,
+            link: consulta.link_consulta
+        })));
+    } catch (erro) {
+        tratarErroSequelize(erro, res);
+    }
+}
+
 module.exports = {
     listar,
     buscar,
     inserir,
     atualizar,
-    excluir
+    excluir,
+    listarMinhasConsultas
 };
