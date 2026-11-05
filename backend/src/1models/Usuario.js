@@ -15,7 +15,7 @@ const Usuario = sequelize.define('usuario', {
         unique: true
     },
 
-    google_acess_token: {
+    google_access_token: {
         type: DataTypes.TEXT,
         allowNull: true
     },
@@ -28,7 +28,7 @@ const Usuario = sequelize.define('usuario', {
     tipo_usuario: {
         type: DataTypes.STRING(50),
         allowNull: false,
-        validate: { isIN: [['Cliente', 'Psicologo', 'Empresa', 'Administrador']]}
+        validate: { isIn: [['Cliente', 'Psicologo', 'Empresa', 'Administrador']]}
     },
 
     email_usuario: {

@@ -27,13 +27,16 @@ async function inserir(req, res) {
         const {
             tipo_usuario,
             email_usuario,
-            senha_usuario,
+            google_id,
             ativo
         } = req.body;
+        if (!google_id) {
+            return res.status(400).json({ erro: 'O Login no Gmail é obrigatório'})
+        }
         const usuarionovo = await Usuario.create({
             tipo_usuario,
             email_usuario,
-            senha_usuario,
+            google_id,
             ativo
         });
         res.status(201).json(usuarionovo);
@@ -51,13 +54,13 @@ async function atualizar(req, res){
         const {
             tipo_usuario,
             email_usuario,
-            senha_usuario,
+            google_id,
             ativo
         } = req.body;
         await usuario.update({
             tipo_usuario,
             email_usuario,
-            senha_usuario,
+            google_id,
             ativo
         });
         res.json(usuario);
