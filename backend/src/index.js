@@ -25,7 +25,6 @@ app.use(cors({
     credentials: true // OBRIGATÓRIO para o cookie de sessão funcionar
 }));
 
-const pool = require('./db');
 app.use(express.json());
 
 // --- CONFIGURAÇÃO DA SESSÃO NO BANCO (PostgreSQL) ---
@@ -62,6 +61,10 @@ app.use('/auth', authRoutes);
 app.use(express.static(
     path.resolve(__dirname, '../../frontend')
 ));
+
+// TEMPORÁRIO (até a SCRUM-192): com SIMULAR_LOGIN=true, preenche req.user pelo header x-usuario-teste.
+const { simularUsuario } = require('./middlewares/autenticacaoTemporaria');
+app.use(simularUsuario);
 
 const usuarioRoutes = require('./3routes/usuarioRoutes');
 app.use('/usuario', usuarioRoutes);

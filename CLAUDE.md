@@ -35,7 +35,6 @@ There is no test suite in either app (`frontend/docs/*.md` are empty placeholder
 
 - The backend loads `.env` from the **repo root** (`backend/src/index.js` resolves `../../.env`), not from `backend/`. It is gitignored and must define `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`. There is no `.env.example` yet.
 - `backend/src/config/database.js` (Sequelize) always connects with SSL (`rejectUnauthorized: false`) because the team shares one **Supabase** database (see `docs/guia-supabase-psycool.md`). Everyone sees the same data, so avoid bulk `UPDATE`/`DELETE`. Connection errors can echo `.env` contents — redact before pasting them anywhere.
-- `backend/src/db.js` is a separate raw `pg` Pool with hard-coded local credentials. It is `require`d in `index.js` but no controller uses it; Sequelize is the real data path.
 - The schema is **not** managed by Sequelize (no `sync`/migrations). It lives in the database, defined by `backend/src/db/psycool_banco.sql`, which despite the extension is a binary `pg_dump` custom-format archive (`PGDMP`) — restore with `pg_restore`, don't try to read or edit it as text.
 - The database contains logic that the Node code relies on or ignores:
   - Trigger `trigger_criptografar_senha_usuario` bcrypt-hashes `usuario.senha_usuario` on INSERT/UPDATE (skips values already starting with `$2a$`/`$2b$`). **Pass plaintext passwords to `Usuario.create/update`; do not hash in Node.**
