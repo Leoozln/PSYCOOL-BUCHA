@@ -22,7 +22,6 @@ app.use(cors({
     origin: 'http://localhost:5173'
 }));
 
-const pool = require('./db');
 app.use(express.json());
 
 // Informa ao Express onde estão os arquivos do front-end (HTML, CSS, JavaScript e imagens),
@@ -30,6 +29,10 @@ app.use(express.json());
 app.use(express.static(
     path.resolve(__dirname, '../../frontend')
 ));
+
+// TEMPORÁRIO (até a SCRUM-192): com SIMULAR_LOGIN=true, preenche req.user pelo header x-usuario-teste.
+const { simularUsuario } = require('./middlewares/autenticacaoTemporaria');
+app.use(simularUsuario);
 
 const usuarioRoutes = require('./3routes/usuarioRoutes');
 app.use('/usuario', usuarioRoutes);

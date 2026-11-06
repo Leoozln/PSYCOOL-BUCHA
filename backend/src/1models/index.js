@@ -21,6 +21,9 @@ Agenda.belongsTo(Psicologo, { foreignKey: 'id_psicologo' });
 Consulta.belongsTo(Cliente, { foreignKey: 'id_cliente_consultado' });
 Consulta.belongsTo(Psicologo, { foreignKey: 'id_psicologo_responsavel' });
 
+Consulta.belongsTo(Agenda, { foreignKey: 'id_consulta_agendada' });
+Agenda.hasOne(Consulta, { foreignKey: 'id_consulta_agendada' });
+
 Anotacao.belongsTo(Consulta, { foreignKey: 'id_consulta_anotacao' });
 Consulta.hasOne(Anotacao, { foreignKey: 'id_consulta_anotacao' });
 
