@@ -5,9 +5,10 @@ const { Usuario } = require('../1models');
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/callback"
+    callbackURL: "http://localhost:3000/auth/google/callback",
+    passReqToCallback: true
   },
-  async (accessToken, refreshToken, profile, done) => {
+  async (req, accessToken, refreshToken, profile, done) => {
     try {
       let usuario = await Usuario.findOne({ where: { google_id: profile.id } });
       if (!usuario) {
@@ -21,7 +22,12 @@ passport.use(new GoogleStrategy({
       }
 
       if (!usuario) {
-        return done(null, false, { message: 'Conta não cadastrada no PsyCool.' });
+        req.session.cadastroPendente = {
+          google_id: profile.id,
+          email: profile.emails[0].value,
+          nome: profile.displayName
+        };
+        return done(null, { cadastroPendente: true });
       }
 
       if (!usuario.ativo) {
@@ -36,12 +42,18 @@ passport.use(new GoogleStrategy({
 ));
 
 passport.serializeUser((usuario, done) => {
+  if (usuario.cadastroPendente) {
+    return done(null, { cadastroPendente: true });  
+  }
   done(null, usuario.id_usuario);
 });
 
-passport.deserializeUser(async (id, done) => {
+passport.deserializeUser(async (obj, done) => {
   try {
-    const usuario = await Usuario.findByPk(id);
+    if (obj && obj.cadastroPendente) {
+      return done(null, obj);
+    }
+    const usuario = await Usuario.findByPk(obj);
     done(null, usuario);
   } catch (erro) {
     done(erro, null);
