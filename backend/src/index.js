@@ -1,31 +1,63 @@
 const path = require('path');
 
-// Carrega as variáveis de ambiente do arquivo .env localizado na raiz do projeto,
-// pois este arquivo index.js está dentro de backend/src.
+// Carrega as variáveis de ambiente
 require('dotenv').config({
     path: path.resolve(__dirname, '../../.env')
 });
 
 const express = require('express');
 const cors = require('cors');
-const app = express()
-const port = 3000
+const session = require('express-session');
+const pgSession = require('connect-pg-simple')(session);
+const passport = require('./config/passport');
+const { Pool } = require('pg');
+const app = express();
+const port = 3000;
 
 const swaggerUi = require('swagger-ui-express');
-
 const swaggerSpec = require('./swagger/swagger');
 
-app.get('/', (req, res) => { res.send('Olá mundo !'); })
+app.get('/', (req, res) => { res.send('Olá mundo !'); });
 
-// Permite que o front-end Vite acesse o back-end.
+// --- CONFIGURAÇÃO DO CORS (Atualizado para aceitar cookies) ---
 app.use(cors({
-    origin: 'http://localhost:5173'
+    origin: 'http://localhost:5173', // Endereço do seu frontend
+    credentials: true // OBRIGATÓRIO para o cookie de sessão funcionar
 }));
 
 app.use(express.json());
 
-// Informa ao Express onde estão os arquivos do front-end (HTML, CSS, JavaScript e imagens),
-// buscando a pasta frontend na raiz do projeto para disponibilizá-los no navegador.
+// --- CONFIGURAÇÃO DA SESSÃO NO BANCO (PostgreSQL) ---
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL || `postgresql://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
+  ssl: { rejectUnauthorized: false } // Necessário para o Supabase
+});
+
+app.use(session({
+    store: new pgSession({
+        pool: pgPool,
+        tableName: 'session',
+        createTableIfMissing: true // Cria a tabela caso não exista
+    }),
+    secret: process.env.SESSION_SECRET || 'psycool_secret_temporario',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { 
+        httpOnly: true, 
+        secure: false, // false no localhost, true em produção
+        maxAge: 1000 * 60 * 60 * 24 // 1 dia
+    }
+}));
+
+// --- INICIALIZAÇÃO DO PASSPORT ---
+app.use(passport.initialize());
+app.use(passport.session());
+
+// --- ROTAS DE AUTENTICAÇÃO ---
+const authRoutes = require('./3routes/authRoutes');
+app.use('/auth', authRoutes);
+
+// --- DEMAIS ROTAS DO SISTEMA ---
 app.use(express.static(
     path.resolve(__dirname, '../../frontend')
 ));
@@ -61,13 +93,12 @@ app.use('/consulta', consultaRoutes);
 const pagamentoRoutes = require('./3routes/pagamentoRoutes');
 app.use('/pagamento', pagamentoRoutes);
 
+// --- SWAGGER ---
 app.use(
     '/swagger',
     swaggerUi.serve,
     swaggerUi.setup(swaggerSpec));
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Example app listening on port ${port}`);
 });
-
-

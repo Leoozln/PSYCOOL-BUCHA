@@ -44,16 +44,16 @@ async function inserir(req,res){
             descricao_psicologo,
             abordagem_psicologo,
             email_usuario,
-            senha_usuario
+            google_id
         } = req.body;
-        if (!email_usuario || !senha_usuario) {
-            return res.status(400).json({ erro: 'Email e senha do usuário são obrigatórios!' });
+        if (!email_usuario || !google_id) {
+            return res.status(400).json({ erro: 'O Login no Gmail é obrigatório!' });
         }
         const resultado = await sequelize.transaction(async (t) => {
             const usuarionovo = await Usuario.create({
                 tipo_usuario: 'Psicologo',
                 email_usuario,
-                senha_usuario,
+                google_id,
                 ativo: true
             }, { transaction: t });
             const psicologonovo = await Psicologo.create({

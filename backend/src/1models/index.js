@@ -8,9 +8,14 @@ const Pagamento = require('./Pagamento');
 const Psicologo = require('./Psicologo');
 const Usuario = require('./Usuario');
 
-// Relações
-Usuario.hasOne(Psicologo, { foreignKey: 'id_psicologo' });
-Psicologo.belongsTo(Usuario, { foreignKey: 'id_psicologo' });
+Usuario.hasOne(Psicologo, { foreignKey: 'id_psicologo', sourceKey: 'id_usuario' });
+Psicologo.belongsTo(Usuario, { foreignKey: 'id_psicologo', targetKey: 'id_usuario' });
+
+Usuario.hasOne(Cliente, { foreignKey: 'id_cliente', sourceKey: 'id_usuario' });
+Cliente.belongsTo(Usuario, {foreignKey: 'id_cliente', targetKey: 'id_usuario' });
+
+Usuario.hasOne(Empresa, {foreignKey: 'id_empresa', sourceKey: 'id_usuario' });
+Empresa.belongsTo(Usuario, {foreignKey: 'id_empresa', targetKey: 'id_usuario'});
 
 Cliente.hasMany(Agenda, { foreignKey: 'id_cliente' });
 Agenda.belongsTo(Cliente, { foreignKey: 'id_cliente' });

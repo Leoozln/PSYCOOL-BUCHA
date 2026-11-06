@@ -62,7 +62,7 @@ function CadastroPsicologo() {
     apiUrl: 'http://localhost:3000/psicologo',
     nome: '',
     email: '',
-    senha: '',
+    cpf: '',
     crp: '',
     contato: '',
     genero: '',
@@ -115,7 +115,8 @@ function CadastroPsicologo() {
     const payload = {
       nome_psicologo: formulario.nome.trim(),
       email_usuario: formulario.email.trim(),
-      senha_usuario: formulario.senha,
+      cpf_psicologo: formulario.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4'),
+      google_id: `google_fake_${Date.now()}`,
       crp_psicologo: formulario.crp.trim(),
       contato_psicologo: formulario.contato.replace(/\D/g, ''),
       genero_psicologo: formulario.genero,
@@ -155,7 +156,7 @@ function CadastroPsicologo() {
         ...anterior,
         nome: '',
         email: '',
-        senha: '',
+        cpf: '',
         crp: '',
         contato: '',
         genero: '',
@@ -224,15 +225,15 @@ function CadastroPsicologo() {
           placeholder="Ex: psicologo@email.com"
         />
 
-        <label htmlFor="senha">Senha</label>
-        <input
-          type="password"
-          id="senha"
-          value={formulario.senha}
+        <label htmlFor="cpf">CPF</label>
+        <input 
+          type="text"
+          id="cpf"
+          value={formulario.cpf}
           onChange={atualizarCampo}
           required
-          minLength={8}
-          placeholder="Digite uma senha"
+          placeholder="Ex: 12345678900"
+          maxLength={11}
         />
 
         <label htmlFor="crp">CRP</label>
