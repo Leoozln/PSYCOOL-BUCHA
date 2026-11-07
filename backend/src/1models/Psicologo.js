@@ -30,7 +30,7 @@ const psicologo = sequelize.define('psicologo', {
         }
     },
 
-    // Obrigatório no model. A coluna do banco ainda aceita nulo porque os cadastros antigos não têm CPF.
+    // Obrigatório no model e no banco: a coluna é NOT NULL, com CHECK de formato e UNIQUE.
     cpf_psicologo: {
         type: DataTypes.STRING(14),
         allowNull: false,
@@ -45,7 +45,7 @@ const psicologo = sequelize.define('psicologo', {
         allowNull: false,
         unique: true,
         validate: {
-            is: /^[1-9]{2}[0-9]{8,9}$/
+            is: /^[1-9]{2}[0-9]{9}$/
         }
     },
 
@@ -133,6 +133,15 @@ const psicologo = sequelize.define('psicologo', {
     data_verificacao_crp: {
         type: DataTypes.DATEONLY,
         allowNull: true
+    },
+
+    // Média das estrelas das avaliações. É mantida pelo trigger trg_atualizador_avaliacao do banco
+    // (a cada INSERT/UPDATE/DELETE em avaliacao), então a API NÃO deve receber nem gravar este campo.
+    // O pg devolve numeric como string (ex.: "0.00").
+    media_avaliacao: {
+        type: DataTypes.DECIMAL(3, 2),
+        allowNull: true,
+        defaultValue: 0
     },
 
 }, {
