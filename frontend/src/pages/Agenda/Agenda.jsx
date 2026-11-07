@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import API_URL from '../../services/api';
+import { api } from '../../services/api';
 import './Agenda.css';
 
 // Tela que lista os horários da agenda vindos do back-end.
@@ -12,7 +12,7 @@ function Agenda() {
     useEffect(() => {
         async function carregarAgendas() {
             try {
-                const resposta = await fetch(`${API_URL}/agenda`);
+                const resposta = await api('/agenda');
 
                 if (!resposta.ok) {
                     throw new Error(`Erro ${resposta.status} ao buscar a agenda.`);

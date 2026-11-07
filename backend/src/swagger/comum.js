@@ -104,6 +104,31 @@ function resposta404(texto) {
     };
 }
 
+// Respostas dos middlewares de login e perfil (formato antigo: só "erro", sem "mensagem").
+function resposta401(texto = 'Login necessário.') {
+    return {
+        description: 'Não autenticado (formato antigo: só "erro", sem "mensagem")',
+        content: {
+            'application/json': {
+                schema: { type: 'object', properties: { erro: { type: 'string' } } },
+                example: { erro: texto }
+            }
+        }
+    };
+}
+
+function resposta403(texto = 'Acesso não permitido para este perfil.') {
+    return {
+        description: 'Perfil sem permissão (formato antigo: só "erro", sem "mensagem")',
+        content: {
+            'application/json': {
+                schema: { type: 'object', properties: { erro: { type: 'string' } } },
+                example: { erro: texto }
+            }
+        }
+    };
+}
+
 function corpoJson(schema) {
     return { required: true, content: { 'application/json': { schema } } };
 }
@@ -208,4 +233,4 @@ function gerarCrud(c) {
     };
 }
 
-module.exports = { campo, lista, erros, gerarCrud };
+module.exports = { campo, lista, erros, gerarCrud, respostasDeErro, resposta401, resposta403 };
