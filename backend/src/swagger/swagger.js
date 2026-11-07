@@ -33,6 +33,7 @@ const swaggerSpec = {
     tags: [
         { name: 'usuario' },
         { name: 'psicologo' },
+        { name: 'cadastro' },
         { name: 'cliente' },
         { name: 'empresa' },
         { name: 'agenda' },
