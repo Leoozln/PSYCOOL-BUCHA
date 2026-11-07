@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import {API_URL, api} from '../../services/api';
+import { api } from '../../services/api';
 import './Agenda.css';
 
 // Tela que lista os horários da agenda vindos do back-end.
