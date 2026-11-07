@@ -5,8 +5,13 @@ const { Psicologo, Cliente, Empresa } = require('../1models');
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-router.get('/google/callback', 
-  passport.authenticate('google', { failureRedirect: 'http://localhost:5173/login?error=falha_google' }),
+router.get('/google/callback',
+  // keepSessionInfo: o passport 0.7 troca a sessão no login (anti session fixation) e descartaria
+  // o req.session.cadastroPendente gravado em config/passport.js.
+  passport.authenticate('google', {
+    failureRedirect: 'http://localhost:5173/login?error=falha_google',
+    keepSessionInfo: true
+  }),
   (req, res) => {
     if (req.user && req.user.cadastroPendente) {
       return res.redirect('http://localhost:5173/cadastro/psicologo');
