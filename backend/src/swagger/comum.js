@@ -51,6 +51,23 @@ const erros = {
         };
     },
 
+    // Cadastros que dependem do login com o Google (POST /cadastro/...): sem cadastro pendente na sessão.
+    loginGoogleNecessario() {
+        return {
+            status: 401,
+            resumo: 'Sem login com o Google (sessão sem cadastro pendente)',
+            corpo: { erro: 'login_google_necessario', mensagem: 'Faça o login com o Google antes de se cadastrar.' }
+        };
+    },
+
+    termoNaoAceito() {
+        return {
+            status: 400,
+            resumo: 'Termo de adesão não aceito: aceite_termo ausente, false ou string',
+            corpo: { erro: 'termo_nao_aceito', mensagem: 'É necessário aceitar o termo de adesão.' }
+        };
+    },
+
     erroInterno() {
         return {
             status: 500,
@@ -62,6 +79,7 @@ const erros = {
 
 const DESCRICAO_STATUS = {
     400: 'Dados inválidos ou registro relacionado inexistente',
+    401: 'Não autenticado',
     409: 'Dado duplicado, registro em uso ou conflito',
     500: 'Erro interno do servidor'
 };

@@ -116,4 +116,74 @@ crud.paths['/psicologo/me/consultas'] = {
     }
 };
 
+// Cadastro com login pelo Google: sem senha, e-mail e google_id vêm da sessão (não do corpo) e sem foto.
+const { foto_psicologo, ...dadosDoCadastro } = dadosDoPsicologo;
+
+const propriedadesCadastroGoogle = {
+    ...dadosDoCadastro,
+    aceite_termo: campo(
+        'boolean',
+        true,
+        'Booleano `true` (sem aspas). A string "true", o número 1 e qualquer outro valor são recusados com 400 `termo_nao_aceito`'
+    )
+};
+
+crud.paths['/cadastro/psicologo'] = {
+    post: {
+        tags: ['cadastro'],
+        summary: 'Cadastra o psicólogo logado com o Google',
+        description:
+            'Cria o **usuário** (tipo Psicologo) e o **psicólogo** juntos, na mesma transação, com `status_validacao: PENDENTE` ' +
+            '(aguarda a aprovação do administrador).\n\n' +
+            'Exige o login com o Google antes: abra `http://localhost:3000/auth/google` com uma conta que ainda não está no banco. ' +
+            'O **e-mail** e o **google_id** vêm da sessão, nunca do corpo. O cookie da sessão vai sozinho porque o Swagger roda ' +
+            'na mesma porta da API (o Thunder Client não envia o cookie do navegador).\n\n' +
+            '`aceite_termo` precisa ser o **booleano `true`**, sem aspas: a string `"true"` também é recusada (400). ' +
+            'O aceite só é validado, não é gravado em tabela.\n\n' +
+            'No sucesso a sessão é encerrada (logout): o próximo login com o Google já encontra o psicólogo no banco. ' +
+            'Se der erro (400, 409), a sessão continua com o cadastro pendente e dá para tentar de novo.\n\n' +
+            '⚠️ O banco é compartilhado. Use dados de teste e apague depois: `DELETE /psicologo/{id}` e depois `DELETE /usuario/{id}`.',
+        requestBody: {
+            required: true,
+            content: {
+                'application/json': {
+                    schema: {
+                        type: 'object',
+                        properties: propriedadesCadastroGoogle,
+                        required: [
+                            'nome_psicologo', 'crp_psicologo', 'cpf_psicologo', 'contato_psicologo', 'genero_psicologo',
+                            'data_nascimento_psicologo', 'especialidade_psicologo', 'aceite_termo'
+                        ]
+                    }
+                }
+            }
+        },
+        responses: {
+            201: {
+                description: 'Psicólogo cadastrado com status PENDENTE. A sessão do Google é encerrada.',
+                content: {
+                    'application/json': {
+                        example: {
+                            id_psicologo: 25,
+                            nome_psicologo: 'Teste Automatizado Alfa',
+                            crp_psicologo: '99/99991',
+                            status_validacao: 'PENDENTE',
+                            usuario: { email_usuario: 'seu.email@gmail.com' }
+                        }
+                    }
+                }
+            },
+            ...respostasDeErro([
+                erros.termoNaoAceito(),
+                erros.dadosInvalidos('Campo fora do formato (CRP, CPF, telefone, idade...)', ['crp_psicologo']),
+                erros.loginGoogleNecessario(),
+                erros.duplicado('crp', 'CRP'),
+                erros.duplicado('cpf', 'CPF'),
+                erros.duplicado('telefone', 'telefone'),
+                erros.duplicado('email', 'e-mail')
+            ])
+        }
+    }
+};
+
 module.exports = crud;

@@ -29,6 +29,8 @@ async function buscar(req,res){
     }
 }
 
+// TODO: fluxo legado (exige senha e não passa pela sessão do Google nem pelo aceite do termo).
+// Remover junto com a rota POST /psicologo quando a SCRUM-204 migrar o front para cadastrarPsicologo.
 async function inserir(req,res){
     try {
         const {
@@ -81,6 +83,85 @@ async function inserir(req,res){
     }
 }
  
+// POST /cadastro/psicologo
+// Cadastro do psicólogo com login pelo Google: não recebe senha, e o e-mail NUNCA vem do corpo,
+// vem do cadastro pendente guardado na sessão. (Diferente do inserir, que é o CRUD antigo com senha.)
+async function cadastrarPsicologo(req,res){
+    try{
+        const pendente = req.session.cadastroPendente;
+        if (!pendente) {
+            return res.status(401).json({
+                erro: 'login_google_necessario',
+                mensagem: 'Faça o login com o Google antes de se cadastrar.'
+            });
+        }
+
+        // No Express 5, req.body fica undefined quando o corpo não é JSON.
+        const corpo = req.body || {};
+
+        // Comparação estrita de propósito: só o booleano true vale ("true", 1 e "sim" são recusados).
+        // Só valida o aceite, não grava em nenhuma tabela.
+        if (corpo.aceite_termo !== true) {
+            return res.status(400).json({
+                erro: 'termo_nao_aceito',
+                mensagem: 'É necessário aceitar o termo de adesão.'
+            });
+        }
+
+        const {
+            nome_psicologo,
+            cpf_psicologo,
+            data_nascimento_psicologo,
+            contato_psicologo,
+            crp_psicologo,
+            especialidade_psicologo,
+            diploma_psicologo,
+            genero_psicologo,
+            abordagem_psicologo,
+            descricao_psicologo
+        } = corpo;
+
+        const psicologo = await sequelize.transaction(async (t) => {
+            const usuarionovo = await Usuario.create({
+                tipo_usuario: 'Psicologo',
+                email_usuario: pendente.email,
+                google_id: pendente.google_id,
+                ativo: true
+            }, { transaction: t });
+            const psicologonovo = await Psicologo.create({
+                id_psicologo: usuarionovo.id_usuario,
+                nome_psicologo,
+                crp_psicologo,
+                cpf_psicologo,
+                contato_psicologo,
+                diploma_psicologo: diploma_psicologo || [],
+                genero_psicologo,
+                data_nascimento_psicologo,
+                especialidade_psicologo,
+                descricao_psicologo,
+                abordagem_psicologo,
+                status_validacao: 'PENDENTE'
+            }, { transaction: t });
+            return await Psicologo.findByPk(psicologonovo.id_psicologo, {
+                include: [inclusaoUsuario],
+                transaction: t
+            });
+        });
+
+        // O logout limpa req.user e regenera a sessão (o passport 0.7 descarta o cadastroPendente junto).
+        // Só apagar o cadastroPendente deixaria req.user = { cadastroPendente: true } e o /auth/me daria 500.
+        // O psicólogo já está gravado, então se o logout falhar só registramos o erro e respondemos 201 do mesmo jeito.
+        req.logout((erroLogout) => {
+            if (erroLogout) {
+                console.error('Falha ao encerrar a sessão após o cadastro do psicólogo:', erroLogout);
+            }
+            res.status(201).json(psicologo);
+        });
+    }catch(erro) {
+        tratarErroSequelize(erro, res);
+    }
+}
+
 async function atualizar(req,res){
     try{
         const psicologo = await Psicologo.findByPk(req.params.id);
@@ -174,6 +255,7 @@ module.exports = {
     listar,
     buscar,
     inserir,
+    cadastrarPsicologo,
     atualizar,
     excluir,
     listarMinhasConsultas
