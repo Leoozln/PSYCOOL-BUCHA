@@ -1,6 +1,7 @@
-
-import { useState } from 'react';
+import { useState, useContext } from 'react';
+import { AuthContext } from '../../contexts/AuthContext';
 import './cadastro-psicologo.css';
+import { API_URL } from '../../services/api';
 
 // Separa um texto em uma lista, usando a vírgula como separador.
 function paraArray(valor) {
@@ -71,6 +72,8 @@ function CadastroPsicologo() {
     diploma: '',
     descricao: ''
   });
+
+  const usuario = useContext(AuthContext);
   
   // Guarda a mensagem de resultado e seu tipo: sucesso ou erro.
   const [resultado, setResultado] = useState(null);
@@ -192,6 +195,8 @@ function CadastroPsicologo() {
       <p className="subtitle">
         Formulário de teste — envia POST para a rota /psicologo da API PsyCool.
       </p>
+
+{!usuario && <a href={API_URL + '/auth/google'}> Cadastre-se com o Google </a>}
 
       <div className="config">
         <label htmlFor="apiUrl">URL da API</label>
@@ -344,3 +349,8 @@ function CadastroPsicologo() {
 }
 
 export default CadastroPsicologo;
+
+
+
+
+ 
