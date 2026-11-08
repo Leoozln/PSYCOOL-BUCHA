@@ -1,0 +1,40 @@
+.diagrama {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.diagrama__tracejado {
+    fill: none;
+    stroke: var(--cor-psicologo);
+    stroke-opacity: 0.6;
+    stroke-width: 2.5;
+    stroke-dasharray: 9 8;
+}
+
+.diagrama__ligacao {
+    stroke-width: 6;
+}
+
+.diagrama__anel {
+    fill: #2A3568;
+}
+
+.diagrama__centro {
+    fill: var(--cor-superficie);
+}
+
+.diagrama__nome {
+    fill: var(--cor-painel);
+    font-size: 21px;
+    font-weight: 700;
+}
+
+.diagrama__icone {
+    color: var(--cor-painel);
+}
+
+.diagrama__rotulo {
+    font-size: 16px;
+    font-weight: 700;
+}

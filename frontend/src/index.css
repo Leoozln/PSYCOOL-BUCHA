@@ -1,3 +1,15 @@
+:root {
+--cor-empresa: #4A6BD8;
+--cor-empresa-escura: #3A59C2;
+--cor-colaborador: #C07F91;
+--cor-psicologo: #9CA7E6;
+--cor-painel: #1C2550;
+--cor-superficie: #F7F6F9;
+--cor-campo-bloqueado: #E4E2EA;
+--cor-texto: #111111;
+--fonte-principal: 'Zilla Slab', Georgia, serif;
+}
+
 * {
 margin: 0;
 padding: 0;
@@ -5,5 +17,16 @@ box-sizing: border-box;
 }
 
 body {
-font-family: Arial, sans-serif;
+font-family: var(--fonte-principal);
+color: var(--cor-texto);
+}
+
+/* Fundo lilás com pontinhos, como nos frames do Figma. */
+.textura-pontilhada {
+background-color: var(--cor-psicologo);
+background-image:
+    radial-gradient(rgba(28, 37, 80, 0.28) 1px, transparent 1.5px),
+    radial-gradient(rgba(28, 37, 80, 0.16) 0.8px, transparent 1.3px);
+background-position: 0 0, 11px 17px;
+background-size: 37px 41px, 23px 29px;
 }

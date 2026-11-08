@@ -1,0 +1,31 @@
+.documento {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.documento__topo {
+    background-color: var(--cor-superficie);
+}
+
+.documento__conteudo {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.documento__card {
+    width: 100%;
+    max-width: 560px;
+    font-size: 1.125rem;
+    text-align: center;
+}
+
+.documento__titulo {
+    margin-bottom: 12px;
+    color: var(--cor-painel);
+    font-size: 2rem;
+    line-height: 1.2;
+}

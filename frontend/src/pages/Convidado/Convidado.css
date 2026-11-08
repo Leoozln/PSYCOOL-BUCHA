@@ -1,0 +1,222 @@
+.convidado {
+    min-height: 100vh;
+    background-color: var(--cor-superficie);
+}
+
+.convidado__lado--empresa {
+    --cor-lado: var(--cor-empresa);
+}
+
+.convidado__lado--colaborador {
+    --cor-lado: var(--cor-colaborador);
+}
+
+.convidado__lado--psicologo {
+    --cor-lado: var(--cor-psicologo);
+}
+
+/* Abertura */
+.convidado__abertura {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 48px;
+    width: min(1120px, 100% - 2rem);
+    margin-inline: auto;
+    padding-block: 40px 56px;
+}
+
+.convidado__abertura-texto {
+    max-width: 680px;
+}
+
+.convidado__titulo {
+    margin: 0;
+    color: var(--cor-painel);
+    font-size: clamp(2.25rem, 6vw, 3.75rem);
+    line-height: 1.08;
+}
+
+.convidado__descricao {
+    margin-top: 20px;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+}
+
+.convidado__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.convidado__simbolo {
+    display: none;
+    flex: 0 0 auto;
+    width: 280px;
+    height: auto;
+}
+
+/* Três lados */
+.convidado__lados {
+    display: grid;
+    width: min(1120px, 100% - 2rem);
+    margin-inline: auto;
+    margin-bottom: 56px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.convidado__painel {
+    padding: 40px 24px;
+    background-color: var(--cor-painel);
+}
+
+.convidado__painel-titulo {
+    color: var(--cor-superficie);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    line-height: 1.15;
+    text-align: center;
+}
+
+.convidado__diagrama {
+    max-width: 400px;
+    margin: 24px auto 0;
+}
+
+.convidado__papeis {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+}
+
+.convidado__papeis-card {
+    width: 100%;
+    max-width: 420px;
+}
+
+.convidado__papeis-titulo {
+    color: var(--cor-painel);
+    font-size: 1.5rem;
+}
+
+.convidado__papeis-lista {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+}
+
+.convidado__papel-nome {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.convidado__papel-nome::before {
+    content: '';
+    flex: 0 0 auto;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: var(--cor-lado);
+}
+
+/* Benefícios */
+.convidado__beneficios {
+    padding-block: 56px;
+}
+
+.convidado__beneficios-conteudo {
+    width: min(1120px, 100% - 2rem);
+    margin-inline: auto;
+}
+
+.convidado__beneficios-titulo {
+    color: var(--cor-painel);
+    font-size: clamp(1.75rem, 4vw, 2.25rem);
+    text-align: center;
+}
+
+.convidado__beneficios-grade {
+    display: grid;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.convidado__beneficio-topo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--cor-painel);
+    font-size: 1.125rem;
+}
+
+.convidado__beneficio-icone {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--cor-lado);
+    color: var(--cor-painel);
+}
+
+.convidado__beneficio-lista {
+    display: grid;
+    gap: 12px;
+    margin-top: 20px;
+    font-size: 1.0625rem;
+    line-height: 1.4;
+    list-style: none;
+}
+
+.convidado__beneficio-lista li {
+    position: relative;
+    padding-left: 20px;
+}
+
+.convidado__beneficio-lista li::before {
+    content: '';
+    position: absolute;
+    top: 0.45em;
+    left: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: var(--cor-lado);
+}
+
+@media (max-width: 480px) {
+    .convidado__acoes .botao {
+        width: 100%;
+    }
+}
+
+@media (min-width: 860px) {
+    .convidado__abertura {
+        padding-block: 64px 80px;
+    }
+
+    .convidado__simbolo {
+        display: block;
+    }
+
+    .convidado__lados {
+        grid-template-columns: 46% 54%;
+    }
+
+    .convidado__painel {
+        padding: 48px 32px;
+    }
+
+    .convidado__beneficios-grade {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+}

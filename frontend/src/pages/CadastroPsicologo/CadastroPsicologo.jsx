@@ -1,8 +1,25 @@
 import { useState, useContext, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
+import Button from '../../components/Button/Button';
+import Input from '../../components/Input/Input';
+import LayoutCadastro from '../../components/LayoutCadastro/LayoutCadastro';
+import Select from '../../components/Select/Select';
 import './cadastro-psicologo.css';
 import { API_URL, api } from '../../services/api';
+
+// Título e posição de cada etapa no indicador.
+const ETAPAS = {
+  google: { titulo: 'Cadastre-se gratuitamente', indice: 0 },
+  dados: { titulo: 'Confirme seus dados', indice: 1 },
+  docs: { titulo: 'Formação e atuação', indice: 2 }
+};
+
+// Os documentos abrem em outra aba para não perder o que já foi preenchido.
+const NOVA_ABA = { target: '_blank', rel: 'noopener noreferrer' };
+
+// Exige ao menos um caractere que não seja espaço.
+const PADRAO_NAO_VAZIO = '.*\\S.*';
 
 // Separa um texto em uma lista, usando a vírgula como separador.
 function paraArray(valor) {
@@ -41,6 +58,16 @@ function maskTelefone(valor) {
   return digitos;
 }
 
+// Data mais recente permitida: o psicólogo precisa ter no mínimo 21 anos.
+function dataMaximaNascimento() {
+  const hoje = new Date();
+  const limite = new Date(hoje.getFullYear() - 21, hoje.getMonth(), hoje.getDate());
+  const mes = String(limite.getMonth() + 1).padStart(2, '0');
+  const dia = String(limite.getDate()).padStart(2, '0');
+
+  return `${limite.getFullYear()}-${mes}-${dia}`;
+}
+
 // Traduz alguns erros retornados pela API para mensagens mais claras.
 function traduzirErro(status, dados) {
   if (status === 404) {
@@ -57,9 +84,20 @@ function traduzirErro(status, dados) {
   return 'Ocorreu um erro inesperado ao processar seu cadastro. Tente novamente em alguns instantes.';
 }
 
+function LogoGoogle() {
+  return (
+    <svg viewBox="0 0 48 48" aria-hidden="true" focusable="false">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </svg>
+  );
+}
+
 function CadastroPsicologo() {
   // Guarda os valores preenchidos nos campos do formulário.
-  
+
   const [formulario, setFormulario] = useState({
     nome: '',
     email: '',
@@ -70,6 +108,7 @@ function CadastroPsicologo() {
     nascimento: '',
     especialidades: '',
     diploma: '',
+    abordagem: '',
   });
 
   const usuario = useContext(AuthContext);
@@ -85,7 +124,7 @@ function CadastroPsicologo() {
         }));
     }
 }, [usuario]);
-  
+
   // Guarda a mensagem de resultado e seu tipo: sucesso ou erro.
   const [resultado, setResultado] = useState(null);
 
@@ -94,6 +133,16 @@ function CadastroPsicologo() {
 
   // Guarda se o checkbox do termo de adesão foi marcado
   const [aceiteTermo, setAceiteTermo] = useState(false);
+
+  // Informa se a pessoa já passou da etapa de dados para a de formação.
+  const [emDocs, setEmDocs] = useState(false);
+
+  // Sem cadastro pendente não há dados do Google para confirmar.
+  let etapa = 'google';
+
+  if (usuario?.cadastroPendente) {
+    etapa = emDocs ? 'docs' : 'dados';
+  }
 
   // Atualiza somente o campo que foi alterado.
   function atualizarCampo(e) {
@@ -121,6 +170,40 @@ function CadastroPsicologo() {
     }));
   }
 
+  // Troca de etapa sem apagar o que já foi preenchido.
+  function trocarEtapa(irParaDocs) {
+    setResultado(null);
+    setEmDocs(irParaDocs);
+    window.scrollTo(0, 0);
+  }
+
+  // Encerra a sessão atual e volta para o login do Google.
+  async function usarOutraConta() {
+    setResultado(null);
+
+    try {
+      await api('/auth/logout', { method: 'POST' });
+      window.location.href = API_URL + '/auth/google';
+    } catch {
+      setResultado({
+        tipo: 'erro',
+        mensagem:
+          'Não foi possível conectar ao servidor. Verifique sua conexão ou tente novamente em instantes.'
+      });
+    }
+  }
+
+  // O navegador só chega aqui com os campos visíveis válidos.
+  function concluirEtapa(e) {
+    if (etapa === 'dados') {
+      e.preventDefault();
+      trocarEtapa(true);
+      return;
+    }
+
+    enviarFormulario(e);
+  }
+
   // Executa quando o usuário envia o formulário.
   async function enviarFormulario(e) {
     e.preventDefault();
@@ -138,9 +221,10 @@ function CadastroPsicologo() {
       data_nascimento_psicologo: formulario.nascimento,
       especialidade_psicologo: paraArray(formulario.especialidades),
       diploma_psicologo: paraArray(formulario.diploma),
+      abordagem_psicologo: formulario.abordagem.trim(),
       aceite_termo: aceiteTermo
     };
-    
+
     try {
       // Envia os dados para a API.
       const resp = await api('/cadastro/psicologo',{
@@ -184,160 +268,208 @@ function CadastroPsicologo() {
   }
 
   return (
-    <div className="card">
-      <h1>Cadastro de Psicólogo</h1>
+    <LayoutCadastro titulo={ETAPAS[etapa].titulo} etapaAtual={ETAPAS[etapa].indice}>
+      {etapa === 'google' && (
+        <>
+          <Button variante="google" href={API_URL + '/auth/google'} className="cadastro__google">
+            <span className="cadastro__google-marca"><LogoGoogle /></span>
+            <span className="cadastro__google-texto">Cadastre-se com o Google</span>
+          </Button>
 
-      <p className="subtitle">
-        Formulário de teste — envia POST para a rota /psicologo da API PsyCool.
-      </p>
+          <p className="cadastro__texto">
+            Ao continuar, você concorda com os<br />
+            <Link to="/termos-de-uso" className="cadastro__link" {...NOVA_ABA}>Termos de uso</Link>
+            {' e a '}
+            <Link to="/politica-de-privacidade" className="cadastro__link" {...NOVA_ABA}>Política de privacidade</Link>
+          </p>
 
-{!usuario && <a href={API_URL + '/auth/google'}> Cadastre-se com o Google </a>}
+          <p className="cadastro__texto">
+            Já tem uma conta?{' '}
+            <a href={API_URL + '/auth/google'} className="cadastro__link">Conecte-se</a>
+          </p>
+        </>
+      )}
 
-      <form id="form" onSubmit={enviarFormulario}>
-        <label htmlFor="nome">Nome</label>
-        <input
-          type="text"
-          id="nome"
-          value={formulario.nome}
-          onChange={atualizarCampo}
-          required
-          minLength={4}
-          placeholder="Ex: Maria Oliveira"
-        />
-        
-        <label htmlFor="email">E-mail</label>
-        <input
-          type="email"
-          id="email"
-          value={formulario.email}
-          onChange={atualizarCampo}
-          required
-          readOnly
-          placeholder="Ex: psicologo@email.com"
-        />
+      {etapa !== 'google' && (
+        <form id="form" className="cadastro__formulario" onSubmit={concluirEtapa}>
+          {etapa === 'dados' && (
+            <div key="dados" className="cadastro__campos cadastro__campos--duplos">
+              <Input
+                label="Nome completo (como no seu registro do CRP)*"
+                type="text"
+                id="nome"
+                value={formulario.nome}
+                onChange={atualizarCampo}
+                required
+                minLength={4}
+                pattern="[A-Za-zÀ-ú ]{4,256}"
+                title="Use somente letras e espaços."
+              />
 
-        <label htmlFor="cpf">CPF</label>
-        <input 
-          type="text"
-          id="cpf"
-          value={formulario.cpf}
-          onChange={atualizarCampo}
-          required
-          placeholder="Ex: 12345678900"
-          maxLength={11}
-        />
+              <Input
+                label="E-mail"
+                type="email"
+                id="email"
+                value={formulario.email}
+                onChange={atualizarCampo}
+                required
+                readOnly
+                title={formulario.email}
+              />
 
-        <label htmlFor="crp">CRP</label>
-        <input
-          type="text"
-          id="crp"
-          value={formulario.crp}
-          onChange={atualizarCRP}
-          required
-          placeholder="Ex: 08/123456"
-          pattern="^\d{2}/\d{5,6}$"
-        />
-        <div className="hint">
-          Formato: NN/NNNNN ou NN/NNNNNN
-        </div>
+              <Input
+                label="CPF*"
+                type="text"
+                id="cpf"
+                value={formulario.cpf}
+                onChange={atualizarCampo}
+                required
+                placeholder="12345678910"
+                maxLength={11}
+                pattern="\d{11}"
+                inputMode="numeric"
+                title="Digite os 11 números do CPF, sem pontos ou traço."
+              />
 
-        <label htmlFor="contato">Contato (telefone)</label>
-        <input
-          type="text"
-          id="contato"
-          value={formulario.contato}
-          onChange={atualizarTelefone}
-          required
-          placeholder="Ex: (41) 99999-8888"
-          pattern="^\(\d{2}\) \d{5}-\d{4}$"
-          maxLength={16}
-        />
-        <div className="hint">
-          Preencha o DDD e o número de telefone.
-        </div>
+              <Input
+                label="CRP*"
+                type="text"
+                id="crp"
+                value={formulario.crp}
+                onChange={atualizarCRP}
+                required
+                placeholder="06/123456"
+                pattern="^\d{2}/\d{5,6}$"
+                title="Formato: NN/NNNNN ou NN/NNNNNN."
+              />
 
-        <label htmlFor="genero">Gênero</label>
-        <select
-          id="genero"
-          value={formulario.genero}
-          onChange={atualizarCampo}
-          required
-        >
-          <option value="">Selecione...</option>
-          <option value="MASCULINO">Masculino</option>
-          <option value="FEMININO">Feminino</option>
-          <option value="OUTRO">Outro</option>
-          <option value="PREFIRO NÃO INFORMAR">
-            Prefiro não informar
-          </option>
-        </select>
+              <Input
+                label="Telefone*"
+                type="text"
+                id="contato"
+                value={formulario.contato}
+                onChange={atualizarTelefone}
+                required
+                placeholder="(42) 92550-1234"
+                pattern="^\(\d{2}\) \d{5}-\d{4}$"
+                maxLength={16}
+                title="Preencha o DDD e o número de telefone."
+              />
 
-        <label htmlFor="nascimento">Data de nascimento</label>
-        <input
-          type="date"
-          id="nascimento"
-          value={formulario.nascimento}
-          onChange={atualizarCampo}
-          required
-        />
-        <div className="hint">
-          Psicólogo precisa ter no mínimo 21 anos (validado pelo servidor)
-        </div>
+              <Input
+                label="Data de nascimento*"
+                type="date"
+                id="nascimento"
+                value={formulario.nascimento}
+                onChange={atualizarCampo}
+                required
+                max={dataMaximaNascimento()}
+                title="É preciso ter no mínimo 21 anos."
+              />
 
-        <label htmlFor="especialidades">Especialidades</label>
-        <input
-          type="text"
-          id="especialidades"
-          value={formulario.especialidades}
-          onChange={atualizarCampo}
-          required
-          placeholder="Ex: Terapia Cognitivo-Comportamental, Ansiedade"
-        />
-        <div className="hint">
-          Separe por vírgula — pelo menos uma é obrigatória
-        </div>
+              <Select
+                label="Gênero*"
+                id="genero"
+                className="cadastro__genero"
+                value={formulario.genero}
+                onChange={atualizarCampo}
+                required
+              >
+                <option value="">Selecione</option>
+                <option value="MASCULINO">Masculino</option>
+                <option value="FEMININO">Feminino</option>
+                <option value="OUTRO">Outro</option>
+                <option value="PREFIRO NÃO INFORMAR">
+                  Prefiro não informar
+                </option>
+              </Select>
+            </div>
+          )}
 
-        <label htmlFor="diploma">
-          Diploma (texto simples por enquanto)
-        </label>
-        <input
-          type="text"
-          id="diploma"
-          value={formulario.diploma}
-          onChange={atualizarCampo}
-          placeholder="Ex: Bacharel em Psicologia - UFPR"
-        />
-        <div className="hint">
-          Opcional. Também pode separar por vírgula se houver mais de um.
-        </div>
+          {etapa === 'docs' && (
+            <div key="docs" className="cadastro__campos">
+              <Input
+                label="Diplomas e titulações*"
+                type="text"
+                id="diploma"
+                value={formulario.diploma}
+                onChange={atualizarCampo}
+                required
+                pattern={PADRAO_NAO_VAZIO}
+                placeholder="Ex.: Psicologia – UFPR, 2018"
+                title="Informe ao menos um diploma. Separe por vírgula se houver mais de um."
+              />
 
-        <label>
-          <input
-            type="checkbox"
-            checked={aceiteTermo}
-            onChange={(e) => setAceiteTermo(e.target.checked)}
-            required
-          />
-          Li e aceito o termo de adesão
-        </label>
+              <Input
+                label="Especialidades*"
+                type="text"
+                id="especialidades"
+                value={formulario.especialidades}
+                onChange={atualizarCampo}
+                required
+                pattern={PADRAO_NAO_VAZIO}
+                placeholder="Ex.: Ansiedade, Depressão"
+                title="Informe ao menos uma especialidade. Separe por vírgula se houver mais de uma."
+              />
 
-        <button type="submit" id="btnEnviar" disabled={enviando}>
-          {enviando ? 'Enviando...' : 'Cadastrar'}
-        </button>
-      </form>
+              <Input
+                label="Abordagem*"
+                type="text"
+                id="abordagem"
+                value={formulario.abordagem}
+                onChange={atualizarCampo}
+                required
+                pattern={PADRAO_NAO_VAZIO}
+                maxLength={100}
+                placeholder="Ex.: TCC, Psicanálise"
+                title="Informe a sua abordagem."
+              />
+
+              <label className="cadastro__termo">
+                <input
+                  type="checkbox"
+                  checked={aceiteTermo}
+                  onChange={(e) => setAceiteTermo(e.target.checked)}
+                  required
+                />
+                <span>
+                  Li e aceito o{' '}
+                  <Link to="/termo-de-adesao" className="cadastro__link" {...NOVA_ABA}>termo de adesão</Link>
+                </span>
+              </label>
+            </div>
+          )}
+
+          {etapa === 'dados' && (
+            <>
+              <Button type="submit" className="cadastro__continuar">Continuar</Button>
+              <p className="cadastro__texto">
+                Não é você?{' '}
+                <button type="button" className="cadastro__link" onClick={usarOutraConta}>
+                  Usar outra conta Google
+                </button>
+              </p>
+            </>
+          )}
+
+          {etapa === 'docs' && (
+            <div className="cadastro__botoes">
+              <Button variante="secundaria" onClick={() => trocarEtapa(false)}>Voltar</Button>
+              <Button type="submit" id="btnEnviar" disabled={enviando}>
+                {enviando ? 'Enviando...' : 'Enviar cadastro'}
+              </Button>
+            </div>
+          )}
+        </form>
+      )}
 
       {resultado && (
-        <div id="resultado" className={resultado.tipo}>
-          <pre>{resultado.mensagem}</pre>
-        </div>
+        <p id="resultado" className="cadastro__erro" role="alert">
+          {resultado.mensagem}
+        </p>
       )}
-    </div>
+    </LayoutCadastro>
   );
 }
 
 export default CadastroPsicologo;
-
-
-
-
- 

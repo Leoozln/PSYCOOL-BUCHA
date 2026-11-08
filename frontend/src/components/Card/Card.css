@@ -1,0 +1,11 @@
+.cartao {
+    padding: 32px;
+    border-radius: 24px;
+    background-color: var(--cor-superficie);
+}
+
+@media (max-width: 480px) {
+    .cartao {
+        padding: 24px;
+    }
+}
