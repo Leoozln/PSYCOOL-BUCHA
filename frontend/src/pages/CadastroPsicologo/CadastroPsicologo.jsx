@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 import './cadastro-psicologo.css';
 import { API_URL } from '../../services/api';
@@ -74,6 +74,16 @@ function CadastroPsicologo() {
   });
 
   const usuario = useContext(AuthContext);
+
+  useEffect(() => {
+    if (usuario && usuario.cadastroPendente) {
+        setFormulario((anterior) => ({
+            ...anterior,
+            nome: usuario.nome,
+            email: usuario.email
+        }));
+    }
+}, [usuario]);
   
   // Guarda a mensagem de resultado e seu tipo: sucesso ou erro.
   const [resultado, setResultado] = useState(null);
@@ -227,6 +237,7 @@ function CadastroPsicologo() {
           value={formulario.email}
           onChange={atualizarCampo}
           required
+          readOnly
           placeholder="Ex: psicologo@email.com"
         />
 
