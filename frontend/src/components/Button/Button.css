@@ -45,3 +45,18 @@
 .botao--secundaria:hover:not(:disabled) {
     background-color: #E9EDFB;
 }
+
+.botao--google {
+    gap: 10px;
+    min-height: 53px;
+    padding: 5px 12px 5px 5px;
+    border-color: #5B87E6;
+    border-radius: 2px;
+    background-color: #5B87E6;
+    color: #FFFFFF;
+}
+
+.botao--google:hover:not(:disabled) {
+    border-color: #4A74D2;
+    background-color: #4A74D2;
+}

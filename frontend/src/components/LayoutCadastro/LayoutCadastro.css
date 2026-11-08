@@ -1,0 +1,128 @@
+.layout-cadastro {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px 16px;
+    overflow: hidden;
+    background-color: var(--cor-painel);
+}
+
+/* A margem negativa esconde as bordas claras que o desfoque cria. */
+.layout-cadastro::before {
+    content: '';
+    position: absolute;
+    inset: -24px;
+    z-index: -1;
+    background: url('../../assets/foto-cadastro.jpg') center bottom / cover no-repeat;
+    filter: blur(7.9px);
+}
+
+.layout-cadastro__moldura {
+    display: grid;
+    width: 100%;
+    max-width: 1040px;
+    border-radius: 24px;
+    overflow: hidden;
+}
+
+.layout-cadastro__painel {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 28px;
+    background-color: var(--cor-painel);
+}
+
+.layout-cadastro__frase {
+    color: var(--cor-superficie);
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+}
+
+.layout-cadastro__diagrama {
+    max-width: 400px;
+    margin-top: 24px;
+}
+
+.layout-cadastro__conteudo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.layout-cadastro__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    width: 100%;
+    max-width: 480px;
+}
+
+.layout-cadastro__logo {
+    flex: 0 0 auto;
+    width: 57px;
+    height: auto;
+}
+
+.layout-cadastro__titulo {
+    color: var(--cor-texto);
+    font-size: 1.375rem;
+    line-height: 1.25;
+    text-align: center;
+}
+
+.layout-cadastro__etapas {
+    display: flex;
+    justify-content: center;
+    gap: clamp(14px, 5vw, 32px);
+    margin-top: 8px;
+    list-style: none;
+}
+
+.layout-cadastro__etapa {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    color: #000000;
+    font-size: 0.8125rem;
+    font-weight: 700;
+}
+
+.layout-cadastro__etapa::before {
+    content: '';
+    width: 21px;
+    height: 21px;
+    border-radius: 50%;
+    background-color: var(--cor-psicologo);
+}
+
+.layout-cadastro__etapa--concluida::before {
+    background-color: #606585;
+}
+
+.layout-cadastro__etapa--atual::before {
+    background-color: var(--cor-painel);
+}
+
+@media (min-width: 860px) {
+    .layout-cadastro__moldura {
+        grid-template-columns: 46% 54%;
+    }
+
+    .layout-cadastro__painel {
+        display: flex;
+    }
+
+    .layout-cadastro__conteudo {
+        padding: 32px;
+    }
+}

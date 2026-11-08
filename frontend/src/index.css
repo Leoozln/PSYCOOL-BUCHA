@@ -20,3 +20,13 @@ body {
 font-family: var(--fonte-principal);
 color: var(--cor-texto);
 }
+
+/* Fundo lilás com pontinhos, como nos frames do Figma. */
+.textura-pontilhada {
+background-color: var(--cor-psicologo);
+background-image:
+    radial-gradient(rgba(28, 37, 80, 0.28) 1px, transparent 1.5px),
+    radial-gradient(rgba(28, 37, 80, 0.16) 0.8px, transparent 1.3px);
+background-position: 0 0, 11px 17px;
+background-size: 37px 41px, 23px 29px;
+}

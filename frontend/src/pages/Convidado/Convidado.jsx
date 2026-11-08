@@ -73,7 +73,7 @@ function Convidado() {
                         <DiagramaMarca className="convidado__diagrama" />
                     </div>
 
-                    <div className="convidado__papeis convidado__pontilhado">
+                    <div className="convidado__papeis textura-pontilhada">
                         <Card className="convidado__papeis-card">
                             <h3 className="convidado__papeis-titulo">Como cada lado participa</h3>
                             <dl className="convidado__papeis-lista">
@@ -88,7 +88,7 @@ function Convidado() {
                     </div>
                 </section>
 
-                <section className="convidado__beneficios convidado__pontilhado" aria-labelledby="titulo-beneficios">
+                <section className="convidado__beneficios textura-pontilhada" aria-labelledby="titulo-beneficios">
                     <div className="convidado__beneficios-conteudo">
                         <h2 className="convidado__beneficios-titulo" id="titulo-beneficios">O que cada lado ganha</h2>
                         <div className="convidado__beneficios-grade">
