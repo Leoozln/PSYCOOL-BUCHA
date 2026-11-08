@@ -1,7 +1,8 @@
 import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import './cadastro-psicologo.css';
-import { API_URL } from '../../services/api';
+import { API_URL, api } from '../../services/api';
 
 // Separa um texto em uma lista, usando a vírgula como separador.
 function paraArray(valor) {
@@ -60,7 +61,6 @@ function CadastroPsicologo() {
   // Guarda os valores preenchidos nos campos do formulário.
   
   const [formulario, setFormulario] = useState({
-    apiUrl: 'http://localhost:3000/psicologo',
     nome: '',
     email: '',
     cpf: '',
@@ -70,10 +70,11 @@ function CadastroPsicologo() {
     nascimento: '',
     especialidades: '',
     diploma: '',
-    descricao: ''
   });
 
   const usuario = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (usuario && usuario.cadastroPendente) {
@@ -90,6 +91,9 @@ function CadastroPsicologo() {
 
   // Informa se o formulário está sendo enviado.
   const [enviando, setEnviando] = useState(false);
+
+  // Guarda se o checkbox do termo de adesão foi marcado
+  const [aceiteTermo, setAceiteTermo] = useState(false);
 
   // Atualiza somente o campo que foi alterado.
   function atualizarCampo(e) {
@@ -127,21 +131,19 @@ function CadastroPsicologo() {
     // Monta os dados no formato esperado pelo backend.
     const payload = {
       nome_psicologo: formulario.nome.trim(),
-      email_usuario: formulario.email.trim(),
       cpf_psicologo: formulario.cpf.replace(/^(\d{3})(\d{3})(\d{3})(\d{2})$/, '$1.$2.$3-$4'),
-      google_id: `google_fake_${Date.now()}`,
       crp_psicologo: formulario.crp.trim(),
       contato_psicologo: formulario.contato.replace(/\D/g, ''),
       genero_psicologo: formulario.genero,
       data_nascimento_psicologo: formulario.nascimento,
       especialidade_psicologo: paraArray(formulario.especialidades),
       diploma_psicologo: paraArray(formulario.diploma),
-      descricao_psicologo: formulario.descricao.trim() || null
+      aceite_termo: aceiteTermo
     };
-
+    
     try {
       // Envia os dados para a API.
-      const resp = await fetch(formulario.apiUrl.trim(), {
+      const resp = await api('/cadastro/psicologo',{
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -159,26 +161,9 @@ function CadastroPsicologo() {
       }
 
       // Se a API responder com sucesso...
-    if (resp.ok) {
-      setResultado({
-        tipo: 'ok',
-        mensagem: 'Psicólogo cadastrado com sucesso!'
-      });
-
-      setFormulario((anterior) => ({
-        ...anterior,
-        nome: '',
-        email: '',
-        cpf: '',
-        crp: '',
-        contato: '',
-        genero: '',
-        nascimento: '',
-        especialidades: '',
-        diploma: '',
-        descricao: ''
-      }));
-    } else {
+      if (resp.ok) {
+        navigate('/cadastro/psicologo/enviado');
+      } else {
       setResultado({
         tipo: 'erro',
         mensagem: traduzirErro(resp.status, dados)
@@ -207,16 +192,6 @@ function CadastroPsicologo() {
       </p>
 
 {!usuario && <a href={API_URL + '/auth/google'}> Cadastre-se com o Google </a>}
-
-      <div className="config">
-        <label htmlFor="apiUrl">URL da API</label>
-        <input
-          type="text"
-          id="apiUrl"
-          value={formulario.apiUrl}
-          onChange={atualizarCampo}
-        />
-      </div>
 
       <form id="form" onSubmit={enviarFormulario}>
         <label htmlFor="nome">Nome</label>
@@ -336,14 +311,15 @@ function CadastroPsicologo() {
           Opcional. Também pode separar por vírgula se houver mais de um.
         </div>
 
-        <label htmlFor="descricao">Descrição (opcional)</label>
-        <textarea
-          id="descricao"
-          rows={3}
-          value={formulario.descricao}
-          onChange={atualizarCampo}
-          placeholder="Breve descrição do profissional"
-        />
+        <label>
+          <input
+            type="checkbox"
+            checked={aceiteTermo}
+            onChange={(e) => setAceiteTermo(e.target.checked)}
+            required
+          />
+          Li e aceito o termo de adesão
+        </label>
 
         <button type="submit" id="btnEnviar" disabled={enviando}>
           {enviando ? 'Enviando...' : 'Cadastrar'}
