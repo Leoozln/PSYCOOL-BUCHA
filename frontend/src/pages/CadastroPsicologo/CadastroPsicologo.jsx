@@ -1,4 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 import './cadastro-psicologo.css';
 import { API_URL, api } from '../../services/api';
@@ -72,6 +73,8 @@ function CadastroPsicologo() {
   });
 
   const usuario = useContext(AuthContext);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (usuario && usuario.cadastroPendente) {
@@ -158,25 +161,9 @@ function CadastroPsicologo() {
       }
 
       // Se a API responder com sucesso...
-    if (resp.ok) {
-      setResultado({
-        tipo: 'ok',
-        mensagem: 'Psicólogo cadastrado com sucesso!'
-      });
-
-      setFormulario((anterior) => ({
-        ...anterior,
-        nome: '',
-        email: '',
-        cpf: '',
-        crp: '',
-        contato: '',
-        genero: '',
-        nascimento: '',
-        especialidades: '',
-        diploma: '',
-      }));
-    } else {
+      if (resp.ok) {
+        navigate('/cadastro/psicologo/enviado');
+      } else {
       setResultado({
         tipo: 'erro',
         mensagem: traduzirErro(resp.status, dados)

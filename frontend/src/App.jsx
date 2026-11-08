@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import CadastroPsicologo from './pages/CadastroPsicologo/CadastroPsicologo';
 import Agenda from './pages/Agenda/Agenda';
 import Convidado from './pages/Convidado/Convidado';
+import CadastroEnviado from './pages/CadastroEnviado/CadastroEnviado';
 
 // Cria o componente principal da aplicação React.
 function App() {
@@ -15,6 +16,7 @@ function App() {
                 <Route path="/" element={<Convidado />} />
                 <Route path="/cadastro/psicologo" element={<CadastroPsicologo />} />
                 <Route path="/psicologo/agenda" element={<Agenda />} />
+                <Route path="/cadastro/psicologo/enviado" element={<CadastroEnviado />} />
             </Routes>
         </BrowserRouter>
     );
