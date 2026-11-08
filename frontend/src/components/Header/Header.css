@@ -1,0 +1,27 @@
+.cabecalho {
+    display: flex;
+    width: min(1120px, 100% - 2rem);
+    margin-inline: auto;
+    padding-block: 16px;
+}
+
+.cabecalho__marca {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--cor-painel);
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.cabecalho__marca:focus-visible {
+    outline: 2px solid var(--cor-empresa);
+    outline-offset: 4px;
+    border-radius: 4px;
+}
+
+.cabecalho__logo {
+    width: 40px;
+    height: auto;
+}

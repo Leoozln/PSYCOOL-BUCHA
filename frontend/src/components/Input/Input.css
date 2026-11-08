@@ -1,0 +1,57 @@
+.input {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.input__rotulo {
+    margin: 0;
+    color: var(--cor-texto);
+    font-size: 0.875rem;
+    font-weight: 300;
+}
+
+.input__caixa {
+    position: relative;
+}
+
+.input__campo {
+    width: 100%;
+    height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--cor-painel);
+    border-radius: 999px;
+    background-color: var(--cor-superficie);
+    color: var(--cor-texto);
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+.input__campo::placeholder {
+    color: #6B6B6B;
+}
+
+.input__campo:focus-visible {
+    outline: 2px solid var(--cor-empresa);
+    outline-offset: 1px;
+}
+
+.input__campo:read-only {
+    padding-right: 40px;
+    background-color: var(--cor-campo-bloqueado);
+}
+
+.input__cadeado {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    width: 16px;
+    height: 16px;
+    transform: translateY(-50%);
+    fill: none;
+    stroke: var(--cor-painel);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+    pointer-events: none;
+}

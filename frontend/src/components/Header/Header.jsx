@@ -1,9 +1,16 @@
 import { Link } from 'react-router-dom';
+import Logo from '../Logo/Logo';
+import './Header.css';
 
-<nav>
-    <Link to="/">Início</Link>
-    {' | '}
-    <Link to="/pessoas">Pessoas</Link>
-    {' | '}
-    <Link to="/cargos">Cargos</Link>
-</nav>
+function Header() {
+    return (
+        <header className="cabecalho">
+            <Link to="/" className="cabecalho__marca">
+                <Logo className="cabecalho__logo" />
+                <span>PsyCool</span>
+            </Link>
+        </header>
+    );
+}
+
+export default Header;
