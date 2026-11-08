@@ -89,6 +89,9 @@ function CadastroPsicologo() {
   // Informa se o formulário está sendo enviado.
   const [enviando, setEnviando] = useState(false);
 
+  // Guarda se o checkbox do termo de adesão foi marcado
+  const [aceiteTermo, setAceiteTermo] = useState(false);
+
   // Atualiza somente o campo que foi alterado.
   function atualizarCampo(e) {
     const { id, value } = e.target;
@@ -132,8 +135,9 @@ function CadastroPsicologo() {
       data_nascimento_psicologo: formulario.nascimento,
       especialidade_psicologo: paraArray(formulario.especialidades),
       diploma_psicologo: paraArray(formulario.diploma),
+      aceite_termo: aceiteTermo
     };
-
+    
     try {
       // Envia os dados para a API.
       const resp = await api('/cadastro/psicologo',{
@@ -319,6 +323,17 @@ function CadastroPsicologo() {
         <div className="hint">
           Opcional. Também pode separar por vírgula se houver mais de um.
         </div>
+
+        <label>
+          <input
+            type="checkbox"
+            checked={aceiteTermo}
+            onChange={(e) => setAceiteTermo(e.target.checked)}
+            required
+          />
+          Li e aceito o termo de adesão
+        </label>
+
         <button type="submit" id="btnEnviar" disabled={enviando}>
           {enviando ? 'Enviando...' : 'Cadastrar'}
         </button>
