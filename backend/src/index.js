@@ -62,10 +62,6 @@ app.use(express.static(
     path.resolve(__dirname, '../../frontend')
 ));
 
-// TEMPORÁRIO (até a SCRUM-192): com SIMULAR_LOGIN=true, preenche req.user pelo header x-usuario-teste.
-const { simularUsuario } = require('./middlewares/autenticacaoTemporaria');
-app.use(simularUsuario);
-
 const usuarioRoutes = require('./3routes/usuarioRoutes');
 app.use('/usuario', usuarioRoutes);
 
